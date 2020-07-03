@@ -92,13 +92,6 @@ const css = () => src(path.src.css)
   )
   .pipe(prettier())
   .pipe(dest(path.build.css))
-  .pipe(postcss([cssnano()]))
-  .pipe(
-    rename({
-      extname: ".min.css",
-    })
-  )
-  .pipe(dest(path.build.css))
   .pipe(browserSync.stream());
 
 // JS
@@ -121,18 +114,26 @@ const js = () =>
     .pipe(dest(path.build.js))
     .pipe(browserSync.stream());
 
-// min JS
+// min JS & CSS
 
-const minjs = () =>
-  src([`${path.build.js}index.js`, `${path.build.js}index.es5.js`])
-    .pipe(terser())
-    .pipe(
-      rename({
-        extname: ".min.js",
-      })
-    )
-    .pipe(dest(path.build.js))
-    .pipe(browserSync.stream());
+const minjs = () => src([`${path.build.js}index.js`, `${path.build.js}index.es5.js`])
+  .pipe(terser())
+  .pipe(
+    rename({
+      extname: ".min.js",
+    })
+  )
+  .pipe(dest(path.build.js))
+  .pipe(browserSync.stream());
+
+const mincss = () => src([`${path.build.css}index.css`])
+  .pipe(postcss([cssnano()]))
+  .pipe(
+    rename({
+      extname: ".min.css",
+    })
+  )
+  .pipe(dest(path.build.css));
 
 // img
 
@@ -168,26 +169,26 @@ const fonts = () => src(path.src.fonts)
 // требуется откорректировать файл
 
 const fontsStyle = (cb) => {
-	const fileContent = fs.readFileSync(`${srcFolder}/css/global/fonts.css`).toString();
-	if (fileContent === '') {
-		fs.writeFileSync(`${srcFolder}/css/global/fonts.css`, '/* Fonts */\r\n');
-		let cFontname;
-		fs.readdirSync(path.build.fonts).forEach((item) => {
-			const fontname = item.split('.')[0];
-			if (cFontname !== fontname) {
-        fs.appendFileSync(`${srcFolder}/css/global/fonts.css`, 
-`@font-face {
+  const fileContent = fs.readFileSync(`${srcFolder}/css/global/fonts.css`).toString();
+  if (fileContent === '') {
+    fs.writeFileSync(`${srcFolder}/css/global/fonts.css`, '/* Fonts */\r\n');
+    let cFontname;
+    fs.readdirSync(path.build.fonts).forEach((item) => {
+      const fontname = item.split('.')[0];
+      if (cFontname !== fontname) {
+        fs.appendFileSync(`${srcFolder}/css/global/fonts.css`,
+          `@font-face {
   font-family: '${fontname}';
   font-display: swap;
   src: url('../fonts/${fontname}.woff2') format('woff2');
   font-style: normal;
   font-weight: 400;
 }\r\n\r\n`);
-			}
-			cFontname = fontname;
-		});
-	}
-	cb();
+      }
+      cFontname = fontname;
+    });
+  }
+  cb();
 };
 
 // clean
@@ -209,16 +210,16 @@ const browser = () => {
 // watch
 
 const watchFiles = () => {
-	watch(path.watch.html, html);
-	watch(path.watch.css, css);
-	watch(path.watch.js, js);
-	watch(path.watch.img, img);
+  watch(path.watch.html, html);
+  watch(path.watch.css, css);
+  watch(path.watch.js, js);
+  watch(path.watch.img, img);
 };
 
 // cобрать проект
 const build = series(
-	clean, parallel(series(js, minjs), css, html, img, fonts),
-	fontsStyle,
+  clean, parallel(series(js, minjs), css, html, img, fonts),
+  fontsStyle,
 );
 // запустить собранный проект
 const watchBrowser = parallel(watchFiles, browser);
@@ -226,7 +227,7 @@ const watchBrowser = parallel(watchFiles, browser);
 exports.html = html;
 exports.css = css;
 exports.js = js;
-exports.minjs = minjs;
+exports.mincssjs = parallel(mincss, minjs);;
 
 exports.img = img;
 exports.fonts = fonts;

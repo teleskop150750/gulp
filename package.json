@@ -10,6 +10,7 @@
     "html": "gulp html",
     "css": "gulp css",
     "js": "gulp js",
+    "mincssjs": "gulp mincssjs",
     "img": "gulp img",
     "fonts": "gulp fonts",
     "fontsStyle": "gulp fontsStyle",
