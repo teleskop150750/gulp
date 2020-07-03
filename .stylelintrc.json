@@ -40,9 +40,9 @@
     "no-extra-semicolons": true,
     "no-invalid-double-slash-comments": true,
 
-    "alpha-value-notation": true,
-    "hue-degree-notation": true,
-    "color-function-notation": true,
+    "alpha-value-notation": "number",
+    "hue-degree-notation": "angle",
+    "color-function-notation": "modern",
 
     "length-zero-no-unit": true,
     "font-weight-notation": "numeric",
