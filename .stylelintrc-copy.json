@@ -1,0 +1,343 @@
+{
+  "extends": ["stylelint-config-standard", "stylelint-config-recess-order"],
+  "rules": {
+    // "indentation": null,
+    // "at-rule-no-unknown": [true,{
+    // 	"ignoreAtRules": ["include", "mixin"]
+    // }],
+    // "color-hex-length": "long",
+    // "declaration-empty-line-before": [
+    // 	"never",
+    // 	{
+    // 		"ignore": [
+    // 		  "after-comment",
+    // 		  "after-declaration",
+    // 		  "inside-single-line-block"
+    // 		]
+    // 	  }
+    // 	],
+
+    // Цвет
+    "color-no-invalid-hex": true, // Запретить недопустимые шестнадцатеричные цвета.
+
+    // Семейство шрифтов
+    "font-family-no-duplicate-names": true, // Запретить дубликаты фамилий шрифтов.
+    "font-family-no-missing-generic-family-keyword": true, // Запретить отсутствующие родовые семейства в списках имен семейства шрифтов.
+
+    // Функция
+    "function-calc-no-invalid": true, // Запретить недопустимое выражение в calcфункциях.
+    "function-calc-no-unspaced-operator": true, // Запретить оператор без пробелов в calcфункциях.
+    "function-linear-gradient-no-nonstandard-direction": true, // Запретить значения направления в linear-gradient()вызовах, которые недопустимы в соответствии со стандартным синтаксисом
+
+    // Строка
+    "string-no-newline": true, // Запрещать (не экранированные) переводы строк.
+
+    // Ед. изм.
+    "unit-no-unknown": true, // Запретить неизвестные юниты.
+
+    // Свойство
+    "property-no-unknown": true, // Запретить неизвестные свойства.
+
+    // Объявление ключевого кадра
+    "keyframe-declaration-no-important": true, // Запретить !importantв объявлениях ключевых кадров.
+
+    // Блок дкаларации
+    "declaration-block-no-duplicate-properties": true, // Запретить повторяющиеся свойства в блоках объявления.
+    "declaration-block-no-shorthand-property-overrides": true, // Запретить сокращенные свойства, которые переопределяют связанные сокращенные свойства.
+
+    // Блок
+    "block-no-empty": true, //  Запретить пустые блоки.
+
+    // Селектор
+    "selector-pseudo-class-no-unknown": true, // Запретить неизвестные селекторы псевдокласса.
+    "selector-pseudo-element-no-unknown": true, // Запретить неизвестные селекторы псевдоэлементов.
+    "selector-type-no-unknown": true, // Запретить селекторы неизвестного типа.
+
+    // Медиа функция
+    "media-feature-name-no-unknown": true, //  Запретить неизвестные имена медиа-функций.
+
+    // В властвуй
+    "at-rule-no-unknown": [
+      true,
+      {
+        // Запретить неизвестные правила.
+        "ignoreAtRules": ["include", "mixin"]
+      }
+    ],
+
+    // Комментарий
+    "comment-no-empty": true, // Запретить пустые комментарии.
+
+    // General / Sheet
+    "no-descending-specificity": true, // Запретить селекторам с более низкой специфичностью приходить после переопределения селекторов с более высокой специфичностью.
+    "no-duplicate-at-import-rules": true, // Запретить повторяющиеся @importправила в таблице стилей.
+    "no-duplicate-selectors": true, // Запретить дублирующиеся селекторы в таблице стилей.
+    "no-empty-source": true, // Запретить пустые источники.
+    "no-extra-semicolons": true, // Запретить лишние точки с запятой (Autofixable).
+    "no-invalid-double-slash-comments": true, // Запретить комментарии с двойной косой чертой ( //...), которые не поддерживаются CSS.
+
+    // Ограничить языковые возможности
+
+    // Альфа-значение
+    "alpha-value-notation": "number", // Укажите процентную или числовую нотацию для альфа-значений (Autofixable).
+
+    // оттенок
+    "hue-degree-notation": "angle", // Укажите число или угол обозначения для оттенков градуса (автофиксируемый).
+
+    // цвет
+    "color-function-notation": "modern", // Укажите современную или унаследованную нотацию для применимых цветовых функций (Autofixable).
+    // color-named: Требовать (где это возможно) или запрещать именованные цвета.
+    "color-no-hex": null, // Запретить шестнадцатеричные цвета.
+
+    // длина
+    "length-zero-no-unit": true, // Запретить единицы для нулевой длины (автофиксируемый).
+
+    // Вес шрифта
+    "font-weight-notation": "numeric", // Требовать числовые или именованные (где это возможно) font-weightзначения. Также, когда ожидаются именованные значения, требуются только допустимые имена.
+
+    // функция
+    // function-blacklist: Укажите черный список запрещенных функций.
+    // function-whitelist: Укажите белый список разрешенных функций.
+    "function-url-no-scheme-relative": true, // Запретить схемы-относительные URL.
+    // function-url-scheme-blacklist: Укажите черный список запрещенных схем URL
+    // function-url-scheme-whitelist: Укажите белый список разрешенных схем URL.
+
+    // Keyframes
+    // keyframes-name-pattern: Укажите шаблон для имен ключевых кадров.
+
+    // Число
+    "number-max-precision": 2, // Ограничение числа десятичных разрядов в числах.
+
+    // Время
+    // time-min-milliseconds: Укажите минимальное количество миллисекунд для значений времени.
+
+    // Ед. изм
+    // unit-blacklist: Укажите черный список запрещенных юнитов.
+    // unit-whitelist: Укажите белый список разрешенных единиц.
+
+    // Сокращенное свойство
+    "shorthand-property-no-redundant-values": true, // Запретить избыточные значения в сокращенных свойствах (Autofixable).
+
+    // Стоимость
+    // value-no-vendor-prefix: Запретить префиксы поставщиков для значений.
+
+    // Собственная собственность
+    // custom-property-pattern: Укажите шаблон для пользовательских свойств.
+
+    // Свойство
+    // property-blacklist: Укажите черный список запрещенных свойств.
+    // property-no-vendor-prefix: Запретить префиксы поставщиков для свойств.
+    // property-whitelist: Укажите белый список разрешенных свойств.
+
+    // декларация
+    // declaration-block-no-redundant-longhand-properties: Запрещать произвольные свойства, которые можно объединить в одно сокращенное свойство.
+    "declaration-no-important": true, // Запретить !importantв декларациях.
+    // declaration-property-unit-blacklist: Укажите черный список запрещенных свойств и пар единиц в объявлениях.
+    "declaration-property-unit-whitelist": {
+      // Укажите белый список разрешенных пар свойств и единиц в объявлениях.
+      "line-height": []
+    },
+    // "declaration-property-value-blacklist": {										// Укажите черный список запрещенных пар свойств и значений в объявлениях.
+    //   "/.*/": [
+    //     "/rgb/",
+    //     "/rgba/"
+    //   ]
+    // },
+    // declaration-property-value-whitelist: Укажите белый список разрешенных пар свойств и значений в объявлениях.
+
+    // Блок декларации
+    "declaration-block-single-line-max-declarations": 1, // Ограничить количество объявлений в блоке однострочных объявлений.
+
+    // селектор
+    // selector-attribute-operator-blacklist: Укажите черный список запрещенных операторов атрибутов.
+    // selector-attribute-operator-whitelist: Укажите белый список разрешенных операторов атрибутов.
+    "selector-class-pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)*(__[a-z0-9]+(-[a-z0-9]+)*)?(--[a-z0-9]+(-[a-z0-9]+)*)?$",
+    // selector-combinator-blacklist: Укажите черный список запрещенных комбинаторов.
+    // selector-combinator-whitelist: Укажите белый список разрешенных комбинаторов.
+    // selector-id-pattern: Укажите шаблон для селекторов идентификаторов.
+    // selector-max-attribute: Ограничение количества атрибутов селекторов в селекторе.
+    // selector-max-class: Ограничение количества классов в селекторе.
+    // selector-max-combinators: Ограничение количества комбинаторов в селекторе.
+    // selector-max-compound-selectors: Ограничение количества составных селекторов в селекторе.
+    // selector-max-empty-lines: Ограничение количества смежных пустых строк в селекторах (автофиксируемый).
+    "selector-max-empty-lines": 0,
+    // selector-max-id: Ограничение количества селекторов идентификатора в селекторе.
+    // selector-max-pseudo-class: Ограничить количество псевдоклассов в селекторе.
+    // selector-max-specificityОграничить специфичность селекторов.
+    // selector-max-type: Ограничение количества типов в селекторе.
+    // selector-max-universal: Ограничение количества универсальных селекторов в селекторе.
+    // selector-nested-pattern: Укажите шаблон для селекторов правил, вложенных в правила.
+    // selector-no-qualifying-type: Запретить квалификацию селектора по типу.
+    // selector-no-vendor-prefix: Запретить префиксы поставщиков для селекторов.
+    // selector-pseudo-class-blacklist: Укажите черный список запрещенных селекторов псевдоклассов.
+    // selector-pseudo-class-whitelist: Укажите белый список разрешенных селекторов псевдоклассов.
+    // selector-pseudo-element-blacklist: Укажите черный список запрещенных селекторов псевдоэлементов.
+    "selector-pseudo-element-colon-notation": "double", // Укажите одинарные или двойные двоеточия для применимых псевдоэлементов (Autofixable).
+    // selector-pseudo-element-whitelist: Укажите белый список разрешенных селекторов псевдоэлементов.
+
+    // Медиа функция
+    // media-feature-name-blacklist: Укажите черный список запрещенных названий медиа-функций.
+    // media-feature-name-no-vendor-prefix: Запретить префиксы поставщиков для названий медиа-функций.
+    // media-feature-name-value-whitelist: Укажите белый список разрешенных пар имени медиа-функции и значений.
+    // media-feature-name-whitelist: Укажите белый список разрешенных имен медиа-функций.
+
+    // General / Sheet
+    // max-nesting-depth: Ограничить глубину вложения.
+    "no-unknown-animations": true, // Запретить неизвестные анимации.
+
+    // цвет
+    "color-hex-case": "lower", // Укажите нижний или верхний регистр для шестнадцатеричных цветов (автофиксируемый).
+    "color-hex-length": "long", // Укажите короткую или длинную нотацию для шестнадцатеричных цветов (Autofixable).
+
+    // Семейство шрифтов
+    "font-family-name-quotes": "always-unless-keyword", //  Укажите, следует ли использовать кавычки вокруг имен семейств шрифтов.
+
+    // функция
+    "function-comma-newline-after": "always-multi-line",										// Требовать символ новой строки или запрещать пробелы после запятых функций
+    // "function-comma-newline-before": "never-multi-line",				// Требовать символ новой строки или запрещать пробелы после запятых функций
+    "function-comma-space-after": "always-single-line", // Требовать один пробел или запретить пробелы после запятых функций (автофиксируемый).
+    "function-comma-space-before": "never", // Требовать один пробел или запретить пробелы перед запятыми функций (автофиксируемые).
+    "function-max-empty-lines": 0, // Ограничение количества смежных пустых строк внутри функций (автофиксируемый).
+    "function-name-case": "lower", // Укажите строчные или прописные буквы для имен функций (Autofixable).
+    "function-parentheses-newline-inside": "always-multi-line", //  Требовать новую строку или запретить пробелы внутри круглых скобок функций (Autofixable).
+    "function-parentheses-space-inside": "never-single-line", // Требовать один пробел или запретить пробелы внутри скобок функций (Autofixable).
+    "function-url-quotes": "always", // Требовать или запрещать кавычки для URL
+    "function-whitespace-after": "always", //  Требовать или запрещать пробелы после функций (автофиксируемый).
+
+    // Число
+    "number-leading-zero": "always",
+    "number-no-trailing-zeros": true,
+
+    // строка
+    "string-quotes": "single", // кажите одинарные или двойные кавычки вокруг строк (Autofixable).
+
+    // Ед. изм
+    "unit-case": "lower", //  Укажите строчные или заглавные буквы для единиц (автофиксируемые).
+
+    // Стоимость
+    "value-keyword-case": [
+      // Укажите строчные или прописные буквы для значений ключевых слов (автофиксируемый).
+      "lower",
+      {
+        "ignoreKeywords": ["A4"]
+      }
+    ],
+    // Список значений
+    "value-list-comma-newline-after": "always-multi-line", // Требовать новую строку или запрещать пробелы после запятых списков значений (автофиксируемый).
+    "value-list-comma-newline-before": "never-multi-line", // Требовать новую строку или запрещать пробелы перед запятыми списков значений.
+    "value-list-comma-space-after": "always-single-line", // Требовать один пробел или запретить пробелы после запятых списков значений (автофиксируемый).
+    "value-list-comma-space-before": "never", // Требовать один пробел или запретить пробелы перед запятыми списков значений (автофиксируемые).
+    "value-list-max-empty-lines": 0, // Ограничить количество смежных пустых строк в списках значений (Autofixable).
+
+    // Собственная собственность
+    // "custom-property-empty-line-before": "never",								// Требовать или запрещать пустую строку перед пользовательскими свойствами (Autofixable).
+
+    // Свойство
+    "property-case": "lower", // Укажите строчные или прописные буквы для свойств (автофиксируемые).
+
+    // декларация
+    "declaration-bang-space-after": "never", // Требовать один пробел или запретить пробелы после взрыва объявлений (Autofixable).
+    "declaration-bang-space-before": "always", // Требовать один пробел или запретить пробелы до взрыва объявлений (Autofixable).
+    "declaration-colon-newline-after": "always-multi-line", // Требовать символ новой строки или запрещать пробелы после двоеточия объявлений (Autofixable).
+    "declaration-colon-space-after": "always-single-line", // Требовать один пробел или запретить пробел после двоеточия объявлений (Autofixable).
+    "declaration-colon-space-before": "never", // Требовать один пробел или запретить пробел перед двоеточием объявлений (автофиксируемый).
+    "declaration-empty-line-before": "never", // Требовать один пробел или запретить пробел перед двоеточием объявлений (автофиксируемый).
+
+    // Блок декларации
+    "declaration-block-semicolon-newline-after": "always-multi-line", // Требовать символ новой строки или запрещать пробелы после точек с запятой блоков объявлений (Autofixable).
+    "declaration-block-semicolon-newline-before": "never-multi-line",	// Требовать новую строку или запрещать пробелы перед точками с запятой блоков объявлений.
+    "declaration-block-semicolon-space-after": "always-single-line", // Требовать один пробел или запретить пробелы после точек с запятой блоков объявлений (Autofixable).
+    "declaration-block-semicolon-space-before": "never", // Требовать один пробел или запретить пробелы перед точками с запятой блоков объявлений (Autofixable).
+    "declaration-block-trailing-semicolon": "always", // Запрашивать или запрещать конечную точку с запятой в блоках декларации (Autofixable).
+
+    // блок
+    "block-closing-brace-empty-line-before": "never", // Требовать или запрещать пустую строку перед закрывающей фигурной скобкой блоков (Autofixable).
+    "block-closing-brace-newline-after": "always", // Требовать новую строку или запрещать пробелы после закрывающей скобки блоков (автофиксируемый).
+    "block-closing-brace-newline-before": "always-multi-line", // Требовать новую строку или запрещать пробелы перед закрывающей скобкой блоков (автофиксируемый).
+    "block-closing-brace-space-after": "always-single-line", //  Требуется один пробел или запрещать пробелы после закрывающей скобки блоков.
+    "block-closing-brace-space-before": "always-single-line", // Требуется один пробел или запрещать пробелы после закрывающей скобки блоков.
+
+    "block-opening-brace-newline-after": "always-multi-line", // Требовать новую строку после открывающей скобки блоков (Autofixable).
+    // block-opening-brace-newline-before: Требовать новую строку или запрещать пробелы перед открывающей скобкой блоков (автофиксируемый).
+    "block-opening-brace-space-after": "always-single-line", // Требуется один пробел или запрещать пробелы после открывающей скобки блоков (автофиксируемый).
+    "block-opening-brace-space-before": "always", // Требуется один пробел или запрещать пробелы перед открывающей скобкой блоков (автофиксируется).
+
+    // селектор
+    "selector-attribute-brackets-space-inside": "never", // Требовать один пробел или запретить пробелы на внутренней стороне скобок в селекторах атрибутов (Autofixable).
+    "selector-attribute-operator-space-after": "never", // Требовать один пробел или запретить пробелы после операторов в селекторах атрибутов (автофиксируемый).
+    "selector-attribute-operator-space-before": "never", // Требовать один пробел или запретить пробелы перед операторами в селекторах атрибутов (автофиксируемые).
+    "selector-attribute-quotes": "always", // Требовать или запрещать кавычки для значений атрибутов.
+    "selector-combinator-space-after": "always", // Требовать один пробел или запретить пробелы после комбинаторов селекторов (Autofixable).
+    "selector-combinator-space-before": "always", // Требовать один пробел или запретить пробелы перед комбинаторами селекторов (Autofixable).
+    "selector-descendant-combinator-no-non-space": true, // Запретить непробельные символы для потомков-комбинаторов селекторов (Autofixable).
+    "selector-pseudo-class-case": "lower", // Укажите строчные или прописные буквы для селекторов псевдоклассов (автофиксируемые).
+    "selector-pseudo-class-parentheses-space-inside": "never", // Требовать один пробел или запретить пробелы внутри скобок в селекторах псевдоклассов (Autofixable).
+    "selector-pseudo-element-case": "lower", // Укажите строчные или прописные буквы для селекторов псевдоэлементов (Autofixable).
+    "selector-type-case": "lower", // Укажите строчные или прописные буквы для селекторов типа (Autofixable).
+
+    // Список выбора
+    "selector-list-comma-newline-after": "always", // Требовать новую строку или запрещать пробелы после запятых списков селекторов (Autofixable).
+    "selector-list-comma-newline-before": "never-multi-line", // Требовать новую строку или запрещать пробелы перед запятыми списков селекторов (автофиксируемые).
+    "selector-list-comma-space-after": "always-single-line", // Требовать один пробел или запретить пробелы после запятых списков селекторов (автофиксируемый).
+    "selector-list-comma-space-before": "never", // Требовать один пробел или запретить пробелы перед запятыми списков селекторов (автофиксируемые).
+
+    // правило
+    "rule-empty-line-before": [
+      // Требовать или запрещать пустую строку перед правилами (Autofixable).
+      "always-multi-line",
+      {
+        "except": ["first-nested"]
+      }
+    ],
+
+    // Медиа функция
+    "media-feature-colon-space-after": "always", // Требовать один пробел или запретить пробел после двоеточия в медиа-функциях (Autofixable).
+    "media-feature-colon-space-before": "never", // Требовать один пробел или запретить пробелы перед двоеточием в медиа-функциях (с возможностью исправления).
+    "media-feature-name-case": "lower", // Укажите строчные или заглавные буквы для названий мультимедийных функций (можно исправить).
+    "media-feature-parentheses-space-inside": "never", // Требовать один пробел или запретить пробелы внутри скобок в функциях мультимедиа (Autofixable).
+    "media-feature-range-operator-space-after": "always", // Требовать один пробел или запретить пробелы после оператора диапазона в медиа-функциях (с возможностью исправления).
+    "media-feature-range-operator-space-before": "always", // Требовать один пробел или запретить пробелы перед оператором диапазона в медиа-функциях (автофиксируемый).
+
+    // Список медиа-запросов
+    "media-query-list-comma-newline-after": "always-multi-line", // Требовать новую строку или запрещать пробелы перед запятыми списков медиа-запросов.
+    // media-query-list-comma-newline-before: Требовать новую строку или запрещать пробелы перед запятыми списков медиа-запросов.
+    "media-query-list-comma-space-after": "always-single-line", // Требовать один пробел или запретить пробелы после запятых списков медиазапросов (с возможностью исправления).
+    "media-query-list-comma-space-before": "never", // Требовать один пробел или запретить пробелы перед запятыми списков медиазапросов (автофиксируется).
+
+    // В властвуй
+    "at-rule-empty-line-before": [
+      // Требовать или запрещать пустую строку перед at-rules (Autofixable).
+      "always",
+      {
+        "except": ["blockless-after-blockless"]
+      }
+    ],
+    "at-rule-name-case": "lower", // Укажите строчные или заглавные буквы для имен в правилах (Autofixable).
+    "at-rule-name-newline-after": "always-multi-line", // Требовать новую строку после имен правил.
+    "at-rule-name-space-after": "always", // Требовать один пробел после имени правила (автофиксируемый).
+    "at-rule-semicolon-newline-after": "always", // Требовать новую строку после точки с запятой at-rules (Autofixable).
+    "at-rule-semicolon-space-before": "never", // Требовать один пробел или запретить пробелы перед точкой с запятой в at-rules.
+
+    // Комментарий
+    "comment-empty-line-before": [
+      // Требовать или запрещать пустую строку перед комментариями (Autofixable).
+      "always",
+      {
+        "except": ["first-nested"]
+      }
+    ],
+    "comment-whitespace-inside": "always",
+
+    "comment-word-blacklist": ["todo"],
+
+    //General / Sheet
+    "indentation": 4, // Укажите отступ (Autofixable).
+    // linebreaks: Укажите разрывы строк Unix или Windows (Autofixable).
+    "max-empty-lines": 2, // Ограничение количества смежных пустых строк (Autofixable).
+    // max-line-length: Ограничить длину строки.
+    "no-eol-whitespace": true, // Запретить пробел в конце строки (автофиксируемый).
+    "no-missing-end-of-source-newline": true // Запретить отсутствующие переводы строк в конце источника (Autofixable).
+    // no-empty-first-line: Запретить пустые первые строки (Autofixable).
+    // unicode-bom: Требовать или запретить Unicode BOM.
+  }
+}
