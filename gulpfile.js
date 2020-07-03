@@ -102,9 +102,7 @@ const js = () =>
     .pipe(dest(path.build.js))
 
     .pipe(
-      babel({
-        presets: ["@babel/preset-env"],
-      })
+      babel()
     )
     .pipe(
       rename({
