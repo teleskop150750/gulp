@@ -170,7 +170,7 @@ const fonts = () => src(path.src.fonts)
 const fontsStyle = (cb) => {
   const fileContent = fs.readFileSync(`${srcFolder}/css/global/fonts.css`).toString();
   if (fileContent === '') {
-    fs.writeFileSync(`${srcFolder}/css/global/fonts.css`, '/* Fonts */\r\n');
+    fs.writeFileSync(`${srcFolder}/css/global/fonts.css`, '/* Fonts */\r\n\r\n');
     let cFontname;
     fs.readdirSync(path.build.fonts).forEach((item) => {
       const fontname = item.split('.')[0];
