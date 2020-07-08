@@ -1,11 +1,13 @@
 // папка проекта
-const distFolder = "dist";
+const distFolder = 'dist';
 // папка исходников
-const srcFolder = "src";
+const srcFolder = 'src';
 // файловая система
-const fs = require("fs");
+const fs = require('fs');
 
-const { src, dest, parallel, series, lastRun, watch } = require("gulp");
+const {
+ src, dest, parallel, series, lastRun, watch,
+} = require('gulp');
 
 // пути
 const path = {
@@ -37,31 +39,31 @@ const path = {
 };
 
 // модули и т.д.
-const htmlInclude = require("gulp-html-tag-include");   // объединение html
-const webpHtml = require("gulp-webp-html");             // webp в html
+const htmlInclude = require('gulp-html-tag-include'); // объединение html
+const webpHtml = require('gulp-webp-html'); // webp в html
 
-const postcss = require("gulp-postcss");                // postcss
-const importcss = require("postcss-import");            // import css
-const media = require("postcss-media-minmax");          // @media (width >= 320px)
-const autoprefixer = require("autoprefixer");           // autoprefixer
-const mqpacker = require("css-mqpacker");               // группирует @media
-const prettier = require("gulp-prettier");              // prettier
-const webpcss = require("gulp-webpcss");                // webpcss
-const cssnano = require("cssnano");                     // сжатие css
+const postcss = require('gulp-postcss'); // postcss
+const importcss = require('postcss-import'); // import css
+const media = require('postcss-media-minmax'); // @media (width >= 320px)
+const autoprefixer = require('autoprefixer'); // autoprefixer
+const mqpacker = require('css-mqpacker'); // группирует @media
+const prettier = require('gulp-prettier'); // prettier
+const webpcss = require('gulp-webpcss'); // webpcss
+const cssnano = require('cssnano'); // сжатие css
 
-const fileInclude = require("gulp-file-include");       // подключение файлов (работает для всех)
-const babel = require("gulp-babel");                    // babel
-const terser = require("gulp-terser");                  // сжатие js
+const fileInclude = require('gulp-file-include'); // подключение файлов (работает для всех)
+const babel = require('gulp-babel'); // babel
+const terser = require('gulp-terser'); // сжатие js
 
-const imageMin = require('gulp-imagemin');              // сжатие картинок
-const webp = require('gulp-webp');                      // конвертация в webp
+const imageMin = require('gulp-imagemin'); // сжатие картинок
+const webp = require('gulp-webp'); // конвертация в webp
 
-const ttf2woff2 = require('gulp-ttf2woff2');            // ttf2woff2
+const ttf2woff2 = require('gulp-ttf2woff2'); // ttf2woff2
 
-const del = require('del');                             // удалить папки/файлы
-const rename = require("gulp-rename");                  // переименовать файл
-const flatten = require('gulp-flatten');                // работа с путями к файлу
-const browserSync = require("browser-sync").create();   // браузер
+const del = require('del'); // удалить папки/файлы
+const rename = require('gulp-rename'); // переименовать файл
+const flatten = require('gulp-flatten'); // работа с путями к файлу
+const browserSync = require('browser-sync').create(); // браузер
 
 // HTML
 
@@ -82,13 +84,13 @@ const css = () => src(path.src.css)
         sort: true,
       }),
       autoprefixer(),
-    ])
+    ]),
   )
   .pipe(
     webpcss({
-      webpClass: ".webp",
-      noWebpClass: ".no-webp",
-    })
+      webpClass: '.webp',
+      noWebpClass: '.no-webp',
+    }),
   )
   .pipe(prettier())
   .pipe(dest(path.build.css))
@@ -96,18 +98,17 @@ const css = () => src(path.src.css)
 
 // JS
 
-const js = () =>
-  src(path.src.js)
+const js = () => src(path.src.js)
     .pipe(fileInclude())
     .pipe(dest(path.build.js))
 
     .pipe(
-      babel()
+      babel(),
     )
     .pipe(
       rename({
-        extname: ".es5.js",
-      })
+        extname: '.es5.js',
+      }),
     )
     .pipe(dest(path.build.js))
     .pipe(browserSync.stream());
@@ -118,8 +119,8 @@ const minjs = () => src([`${path.build.js}index.js`, `${path.build.js}index.es5.
   .pipe(terser())
   .pipe(
     rename({
-      extname: ".min.js",
-    })
+      extname: '.min.js',
+    }),
   )
   .pipe(dest(path.build.js))
   .pipe(browserSync.stream());
@@ -128,8 +129,8 @@ const mincss = () => src([`${path.build.css}index.css`])
   .pipe(postcss([cssnano()]))
   .pipe(
     rename({
-      extname: ".min.css",
-    })
+      extname: '.min.css',
+    }),
   )
   .pipe(dest(path.build.css));
 
@@ -141,7 +142,7 @@ const img = () => src(path.src.img, { since: lastRun(img) })
       quality: 70,
     }),
   )
-  .pipe(flatten())                // удалить относительный путь к картинке
+  .pipe(flatten()) // удалить относительный путь к картинке
   .pipe(dest(path.build.img))
 
   .pipe(src(path.src.img))
@@ -153,7 +154,7 @@ const img = () => src(path.src.img, { since: lastRun(img) })
       optimizationLevel: 3,
     }),
   )
-  .pipe(flatten())                // удалить относительный путь к картинке
+  .pipe(flatten()) // удалить относительный путь к картинке
   .pipe(dest(path.build.img))
   .pipe(browserSync.stream());
 
@@ -225,7 +226,7 @@ const watchBrowser = parallel(watchFiles, browser);
 exports.html = html;
 exports.css = css;
 exports.js = js;
-exports.mincssjs = parallel(mincss, minjs);;
+exports.mincssjs = parallel(mincss, minjs);
 
 exports.img = img;
 exports.fonts = fonts;
