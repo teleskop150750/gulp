@@ -6,7 +6,7 @@ const srcFolder = 'src';
 const fs = require('fs');
 
 const {
- src, dest, parallel, series, lastRun, watch,
+  src, dest, parallel, series, lastRun, watch,
 } = require('gulp');
 
 // пути
@@ -99,19 +99,19 @@ const css = () => src(path.src.css)
 // JS
 
 const js = () => src(path.src.js)
-    .pipe(fileInclude())
-    .pipe(dest(path.build.js))
+  .pipe(fileInclude())
+  .pipe(dest(path.build.js))
 
-    .pipe(
-      babel(),
-    )
-    .pipe(
-      rename({
-        extname: '.es5.js',
-      }),
-    )
-    .pipe(dest(path.build.js))
-    .pipe(browserSync.stream());
+  .pipe(
+    babel(),
+  )
+  .pipe(
+    rename({
+      extname: '.es5.js',
+    }),
+  )
+  .pipe(dest(path.build.js))
+  .pipe(browserSync.stream());
 
 // min JS & CSS
 
