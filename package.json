@@ -16,12 +16,6 @@
     "fontsStyle": "gulp fontsStyle",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "browserslist": [
-    "last 10 version",
-    "not dead",
-    "not ie <= 11",
-    "iOS >= 12"
-  ],
   "author": "teleskop150750",
   "license": "ISC",
   "devDependencies": {
