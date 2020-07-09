@@ -35,7 +35,7 @@ const path = {
 		css: `${srcFolder}/css/index.css`,
 		js: `${srcFolder}/js/index.js`,
 		img: `${srcFolder}/**/`,
-		fonts: `${srcFolder}/fonts/*.ttf`,
+		fonts: `${srcFolder}/fonts/`,
 	},
 	// отслеживание
 	watch: {
@@ -141,8 +141,7 @@ const mincss = () => src([`${path.build.css}index.css`])
 // img
 
 const img = (cb) => {
-	const tasks = fs.readdirSync(`${srcFolder}/blocks/`);
-	tasks.forEach((block) => {
+	fs.readdirSync(`${srcFolder}/blocks/`).forEach((block) => {
 		src(`src/blocks/${block}/img/*.{jpg,png,}`)
 			.pipe(
 				webp({
@@ -153,18 +152,14 @@ const img = (cb) => {
 			.pipe(flatten()) // удалить относительный путь к картинке
 			.pipe(dest(`${srcFolder}/blocks/${block}/img`));
 	});
-	// del('src/blocks/**/img/*.{jpg,png,}');
 	cb();
 };
 
-// jpg, png remove
-const removeIMG = () => del('src/blocks/**/img/*.{jpg,png,}');
-
 // fonts
 
-const fonts = () => src(path.src.fonts)
+const fonts = () => src(`${path.src.fonts}*.ttf`)
 	.pipe(ttf2woff2())
-	.pipe(dest(path.build.fonts));
+	.pipe(dest(path.src.fonts));
 
 // запись шрифтов в fonts.css
 // файл должен быть изначально пустой
@@ -183,11 +178,11 @@ const fontsStyle = (cb) => {
 			if (cFontName !== fontName) {
 				fs.appendFileSync(`${srcFolder}/css/global/fonts.css`, // завписываем структуру подключения в файл
 					`@font-face {
-  font-family: '${fontName}';
-  font-display: swap;
-  src: url('../fonts/${fontName}.woff2') format('woff2');
-  font-style: normal;
-  font-weight: 400;
+	font-family: '${fontName}';
+	font-display: swap;
+	src: url('../fonts/${fontName}.woff2') format('woff2');
+	font-style: normal;
+	font-weight: 400;
 }\r\n\r\n`);
 			}
 			cFontName = fontName;
@@ -199,6 +194,9 @@ const fontsStyle = (cb) => {
 // clean
 
 const clean = () => del(path.clean);
+
+// удалить jpg, png, ttf
+const cleanSRC = () => del(['src/blocks/**/img/*.{jpg,png}', `${path.src.fonts}*.ttf`]);
 
 // syns
 
@@ -235,7 +233,6 @@ exports.js = js;
 exports.mincssjs = parallel(mincss, minjs);
 
 exports.img = img;
-exports.removeIMG = removeIMG;
 exports.fonts = fonts;
 exports.fontsStyle = fontsStyle;
 
@@ -243,6 +240,7 @@ exports.browser = browser;
 exports.watchFiles = watchFiles;
 
 exports.clean = clean;
+exports.cleanSRC = cleanSRC;
 
 exports.build = build;
 exports.default = series(build, watchBrowser);
