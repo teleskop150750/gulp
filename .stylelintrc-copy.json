@@ -331,7 +331,7 @@
     "comment-word-blacklist": ["todo"],
 
     //General / Sheet
-    "indentation": 4, // Укажите отступ (Autofixable).
+    "indentation": "tab", // Укажите отступ (Autofixable).
     // linebreaks: Укажите разрывы строк Unix или Windows (Autofixable).
     "max-empty-lines": 2, // Ограничение количества смежных пустых строк (Autofixable).
     // max-line-length: Ограничить длину строки.
