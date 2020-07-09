@@ -11,5 +11,46 @@
         "sourceType": "module"
     },
     "rules": {
+        // неиспользуемые переменные
+        "no-unused-vars": "warn",
+        // запретить console
+        "no-console": "off",
+        // запретить alert
+        "no-alert": "off",
+        // зфпретить x++;
+        "no-plusplus": "off",
+        // пустая строка в конце
+        "eol-last": "warn",
+        // пустые строки в конце
+        "no-multiple-empty-lines": "off",
+        // табы и оступы
+        "no-tabs": "off",
+        "indent": ["error", "tab"],
+        // return в стрелках
+        // можно использовать
+        "arrow-body-style": "warn",
+        //использовать дуструкториязацию => false
+        // const name = obj.name;
+        "prefer-destructuring": "off",
+        // переопределить парметры в функции
+        "no-param-reassign": "off",
+        //максимальная длина строки
+        "max-len": [
+            "warn",
+            {
+                "code": 80,
+                "ignoreComments": true,
+                "ignoreTrailingComments": true,
+                "ignoreUrls": true,
+                "ignoreStrings": true,
+                "ignoreTemplateLiterals": true,
+                "ignoreRegExpLiterals": true
+            }
+        ],
+        //перенос строк для windows
+        "linebreak-style": [
+            "error",
+            "windows"
+        ]
     }
 }
