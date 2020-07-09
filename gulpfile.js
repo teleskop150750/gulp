@@ -6,36 +6,36 @@ const srcFolder = 'src';
 const fs = require('fs');
 
 const {
-  src, dest, parallel, series, lastRun, watch,
+	src, dest, parallel, series, lastRun, watch,
 } = require('gulp');
 
 // пути
 const path = {
-  // проект
-  build: {
-    html: `${distFolder}/`,
-    css: `${distFolder}/`,
-    js: `${distFolder}/`,
-    img: `${distFolder}/img/`,
-    fonts: `${distFolder}/fonts/`,
-  },
-  // исходники
-  src: {
-    html: `${srcFolder}/index.html`,
-    css: `${srcFolder}/css/index.css`,
-    js: `${srcFolder}/js/index.js`,
-    img: `${srcFolder}/**/*.{jpg,png,gif,ico,webp}`,
-    fonts: `${srcFolder}/fonts/*.ttf`,
-  },
-  // отслеживание
-  watch: {
-    html: `${srcFolder}/**/*.html`,
-    css: `${srcFolder}/**/*.scss`,
-    js: `${srcFolder}/**/*.js`,
-    img: `${srcFolder}/**/*.{jpg,png,gif,ico,webp}`,
-  },
-  // очистка
-  clean: `./${distFolder}/`,
+	// проект
+	build: {
+		html: `${distFolder}/`,
+		css: `${distFolder}/`,
+		js: `${distFolder}/`,
+		img: `${distFolder}/img/`,
+		fonts: `${distFolder}/fonts/`,
+	},
+	// исходники
+	src: {
+		html: `${srcFolder}/index.html`,
+		css: `${srcFolder}/css/index.css`,
+		js: `${srcFolder}/js/index.js`,
+		img: `${srcFolder}/**/*.{jpg,png,gif,ico,webp}`,
+		fonts: `${srcFolder}/fonts/*.ttf`,
+	},
+	// отслеживание
+	watch: {
+		html: `${srcFolder}/**/*.html`,
+		css: `${srcFolder}/**/*.scss`,
+		js: `${srcFolder}/**/*.js`,
+		img: `${srcFolder}/**/*.{jpg,png,gif,ico,webp}`,
+	},
+	// очистка
+	clean: `./${distFolder}/`,
 };
 
 // модули и т.д.
@@ -68,126 +68,127 @@ const browserSync = require('browser-sync').create(); // браузер
 // HTML
 
 const html = () => src(path.src.html)
-  .pipe(htmlInclude())
-  .pipe(webpHtml())
-  .pipe(dest(path.build.html))
-  .pipe(browserSync.stream());
+	.pipe(htmlInclude())
+	.pipe(webpHtml())
+	.pipe(dest(path.build.html))
+	.pipe(browserSync.stream());
 
 // CSS
 
 const css = () => src(path.src.css)
-  .pipe(
-    postcss([
-      importcss(),
-      media(),
-      mqpacker({
-        sort: true,
-      }),
-      autoprefixer(),
-    ]),
-  )
-  .pipe(
-    webpcss({
-      webpClass: '.webp',
-      noWebpClass: '.no-webp',
-    }),
-  )
-  .pipe(prettier())
-  .pipe(dest(path.build.css))
-  .pipe(browserSync.stream());
+	.pipe(
+		postcss([
+			importcss(),
+			media(),
+			mqpacker({
+				sort: true,
+			}),
+			autoprefixer(),
+		]),
+	)
+	.pipe(
+		webpcss({
+			webpClass: '.webp',
+			noWebpClass: '.no-webp',
+		}),
+	)
+	.pipe(prettier())
+	.pipe(dest(path.build.css))
+	.pipe(browserSync.stream());
 
 // JS
 
 const js = () => src(path.src.js)
-  .pipe(fileInclude())
-  .pipe(dest(path.build.js))
+	.pipe(fileInclude())
+	.pipe(dest(path.build.js))
 
-  .pipe(
-    babel(),
-  )
-  .pipe(
-    rename({
-      extname: '.es5.js',
-    }),
-  )
-  .pipe(dest(path.build.js))
-  .pipe(browserSync.stream());
+	.pipe(
+		babel(),
+	)
+	.pipe(
+		rename({
+			extname: '.es5.js',
+		}),
+	)
+	.pipe(dest(path.build.js))
+	.pipe(browserSync.stream());
 
 // min JS & CSS
 
 const minjs = () => src([`${path.build.js}index.js`, `${path.build.js}index.es5.js`])
-  .pipe(terser())
-  .pipe(
-    rename({
-      extname: '.min.js',
-    }),
-  )
-  .pipe(dest(path.build.js))
-  .pipe(browserSync.stream());
+	.pipe(terser())
+	.pipe(
+		rename({
+			extname: '.min.js',
+		}),
+	)
+	.pipe(dest(path.build.js))
+	.pipe(browserSync.stream());
 
 const mincss = () => src([`${path.build.css}index.css`])
-  .pipe(postcss([cssnano()]))
-  .pipe(
-    rename({
-      extname: '.min.css',
-    }),
-  )
-  .pipe(dest(path.build.css));
+	.pipe(postcss([cssnano()]))
+	.pipe(
+		rename({
+			extname: '.min.css',
+		}),
+	)
+	.pipe(dest(path.build.css));
 
 // img
 
 const img = () => src(path.src.img, { since: lastRun(img) })
-  .pipe(
-    webp({
-      quality: 70,
-    }),
-  )
-  .pipe(flatten()) // удалить относительный путь к картинке
-  .pipe(dest(path.build.img))
+	.pipe(
+		webp({
+			quality: 70,
+		}),
+	)
+	.pipe(flatten()) // удалить относительный путь к картинке
+	.pipe(dest(path.build.img))
 
-  .pipe(src(path.src.img))
-  .pipe(
-    imageMin({
-      progressive: true,
-      svgoPlugins: [{ removeViewBox: false }],
-      interlaced: true,
-      optimizationLevel: 3,
-    }),
-  )
-  .pipe(flatten()) // удалить относительный путь к картинке
-  .pipe(dest(path.build.img))
-  .pipe(browserSync.stream());
+	.pipe(src(path.src.img))
+	.pipe(
+		imageMin({
+			progressive: true,
+			svgoPlugins: [{ removeViewBox: false }],
+			interlaced: true,
+			optimizationLevel: 3,
+		}),
+	)
+	.pipe(flatten()) // удалить относительный путь к картинке
+	.pipe(dest(path.build.img))
+	.pipe(browserSync.stream());
 
 // fonts
 
 const fonts = () => src(path.src.fonts)
-  .pipe(ttf2woff2())
-  .pipe(dest(path.build.fonts));
+	.pipe(ttf2woff2())
+	.pipe(dest(path.build.fonts));
 
 // запись шрифтов в fonts.css
-// требуется откорректировать файл
+// файл должен быть изначально пустой
+// в конце требуется откорректировать названиие шрифтов и их начертание
 
 const fontsStyle = (cb) => {
-  const fileContent = fs.readFileSync(`${srcFolder}/css/global/fonts.css`).toString();
-  if (fileContent === '') {
-    fs.writeFileSync(`${srcFolder}/css/global/fonts.css`, '/* Fonts */\r\n\r\n');
-    let cFontname;
-    fs.readdirSync(path.build.fonts).forEach((item) => {
-      const fontname = item.split('.')[0];
-      if (cFontname !== fontname) {
-        fs.appendFileSync(`${srcFolder}/css/global/fonts.css`,
-          `@font-face {
+	const fileContent = fs.readFileSync(`${srcFolder}/css/global/fonts.css`).toString();
+	if (fileContent === '') {
+		fs.writeFileSync(`${srcFolder}/css/global/fonts.css`, '/* Fonts */\r\n\r\n');
+		let cFontname;
+		fs.readdirSync(path.build.fonts).forEach((item) => {
+			const fontname = item.split('.')[0];
+			if (cFontname !== fontname) {
+				fs.appendFileSync(`${srcFolder}/css/global/fonts.css`,
+					`@font-face {
   font-family: '${fontname}';
   font-display: swap;
   src: url('../fonts/${fontname}.woff2') format('woff2');
   font-style: normal;
   font-weight: 400;
 }\r\n\r\n`);
-      }
-      cFontname = fontname;
-    });
-  }
-  cb();
+			}
+			cFontname = fontname;
+		});
+	}
+	cb();
 };
 
 // clean
@@ -197,28 +198,28 @@ const clean = () => del(path.clean);
 // syns
 
 const browser = () => {
-  browserSync.init({
-    server: {
-      baseDir: `./${distFolder}/`,
-    },
-    port: 3000,
-    notify: false,
-  });
+	browserSync.init({
+		server: {
+			baseDir: `./${distFolder}/`,
+		},
+		port: 3000,
+		notify: false,
+	});
 };
 
 // watch
 
 const watchFiles = () => {
-  watch(path.watch.html, html);
-  watch(path.watch.css, css);
-  watch(path.watch.js, js);
-  watch(path.watch.img, img);
+	watch(path.watch.html, html);
+	watch(path.watch.css, css);
+	watch(path.watch.js, js);
+	watch(path.watch.img, img);
 };
 
 // cобрать проект
 const build = series(
-  clean, parallel(series(js, minjs), css, html, img, fonts),
-  fontsStyle,
+	clean, parallel(series(js, minjs), css, html, img, fonts),
+	fontsStyle,
 );
 // запустить собранный проект
 const watchBrowser = parallel(watchFiles, browser);
