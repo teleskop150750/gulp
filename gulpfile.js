@@ -159,7 +159,7 @@ const img = (cb) => {
 };
 
 // jpg, png remove
-const clean = () => del('src/blocks/**/img/*.{jpg,png,}');
+const removeIMG = () => del('src/blocks/**/img/*.{jpg,png,}');
 
 // fonts
 
@@ -236,6 +236,7 @@ exports.js = js;
 exports.mincssjs = parallel(mincss, minjs);
 
 exports.img = img;
+exports.removeIMG = removeIMG;
 exports.fonts = fonts;
 exports.fontsStyle = fontsStyle;
 
