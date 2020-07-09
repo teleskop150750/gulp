@@ -73,7 +73,6 @@ const ttf2woff2 = require('gulp-ttf2woff2'); // ttf2woff2
 const del = require('del'); // удалить папки/файлы
 const rename = require('gulp-rename'); // переименовать файл
 const flatten = require('gulp-flatten'); // работа с путями к файлу
-const merge = require('merge-stream');
 const browserSync = require('browser-sync').create(); // браузер
 
 // HTML

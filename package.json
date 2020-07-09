@@ -44,7 +44,6 @@
     "gulp-webp": "^4.0.1",
     "gulp-webp-html": "^1.0.2",
     "gulp-webpcss": "^1.1.1",
-    "merge-stream": "^2.0.0",
     "postcss-import": "^12.0.1",
     "postcss-media-minmax": "^4.0.0",
     "stylelint": "^13.6.1",
