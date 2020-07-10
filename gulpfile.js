@@ -179,10 +179,7 @@ const otf = () => src(`${path.src.fonts}*.otf`)
 	.pipe(fonter({
 		formats: ['ttf'],
 	}))
-	.pipe(dest(path.src.fonts))
-
-	.pipe(src(`${path.src.fonts}*.woff2`))
-	.pipe(dest(path.build.fonts));
+	.pipe(dest(path.src.fonts));
 
 // запись шрифтов в fonts.css
 // файл должен быть изначально пустой
@@ -245,12 +242,19 @@ const watchFiles = () => {
 	watch(path.watch.css, css);
 	watch(path.watch.js, js);
 	watch(`${path.src.img}*.{jpg,png,}`, img);
+	watch(`${path.src.fonts}*.{otf,ttf,}`, series(otf, ttf));
 };
 
 // cобрать проект
-const build = series(clean, parallel(js, css, html, img, series(parallel(ttf, otf), fontsStyle)));
+const build = series(clean, parallel(html, css, js, img, series(series(otf, ttf), fontsStyle)));
 // запустить watcher и браузер
 const watchBrowser = parallel(watchFiles, browser);
+
+exports.default = series(build, watchBrowser);
+
+exports.build = build;
+exports.watchFiles = watchFiles;
+exports.browser = browser;
 
 exports.html = html;
 exports.css = css;
@@ -264,10 +268,4 @@ exports.clean = clean;
 exports.cleanSRC = cleanSRC;
 exports.cleanMin = cleanMin;
 
-exports.build = build;
-exports.browser = browser;
-exports.watchFiles = watchFiles;
-
 exports.min = series(cleanMin, parallel(minHTML, minCSS, minJS, copy));
-
-exports.default = series(build, watchBrowser);

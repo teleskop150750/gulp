@@ -5,16 +5,15 @@
   "main": "index.html",
   "scripts": {
     "start": "gulp",
-    "watchFiles": "gulp watchFiles",
     "build": "gulp build",
+    "watchFiles": "gulp watchFiles",
     "html": "gulp html",
     "css": "gulp css",
     "js": "gulp js",
-    "min": "gulp min",
     "img": "gulp img",
     "fonts": "gulp fonts fontsStyle",
     "cleanSRC": "gulp cleanSRC",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "min": "gulp min"
   },
   "author": "teleskop150750",
   "license": "ISC",
