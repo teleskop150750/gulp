@@ -79,7 +79,7 @@ const browserSync = require('browser-sync').create(); // браузер
 // HTML
 
 const html = () => src(path.src.html)
-	.pipe(htmlInclude())
+	.pipe(htmlInclude()) // собироваем в один файл
 	.pipe(dest(path.build.html))
 	.pipe(browserSync.stream());
 
@@ -88,27 +88,27 @@ const html = () => src(path.src.html)
 const css = () => src(path.src.css)
 	.pipe(
 		postcss([
-			importcss(),
-			media(),
+			importcss(), // собироваем в один файл
+			media(), // media  в старый формат
 			mqpacker({
 				sort: true,
-			}),
-			autoprefixer(),
+			}), // группируем media
+			autoprefixer(), // autoprefixer
 		]),
 	)
-	.pipe(prettier())
+	.pipe(prettier()) // форматирование кода
 	.pipe(dest(path.build.css))
 	.pipe(browserSync.stream());
 
 // JS
 
 const js = () => src(path.src.js)
-	.pipe(fileInclude())
+	.pipe(fileInclude()) // собироваем в один файл
 	.pipe(dest(path.build.js))
 
 	.pipe(babel({
 		presets: ['@babel/preset-env'],
-	}))
+	})) // babel
 	.pipe(
 		rename({
 			extname: '.es5.js',
@@ -128,21 +128,11 @@ const minHTML = () => src([`${path.build.html}index.html`]) // сжимаем cs
 
 const minCSS = () => src([`${path.build.css}index.css`]) // сжимаем css
 	.pipe(postcss([cssnano()]))
-	.pipe(
-		rename({
-			extname: '.min.css',
-		}),
-	)
 	.pipe(dest(path.minBuild.css));
 
 const minJS = () => src([`${path.build.js}index.js`, `${path.build.js}index.es5.js`])
 	.pipe(src([`${path.build.js}*.js`]))
 	.pipe(terser())
-	.pipe(
-		rename({
-			extname: '.min.js',
-		}),
-	)
 	.pipe(dest(path.minBuild.js));
 
 const copy = () => src([
