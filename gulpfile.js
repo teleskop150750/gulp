@@ -1,4 +1,3 @@
-/* eslint-disable linebreak-style */
 /* eslint-disable max-len */
 // папка проекта
 const distFolder = 'dist';
