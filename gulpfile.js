@@ -105,7 +105,9 @@ const js = () => src(path.src.js)
 	.pipe(fileInclude())
 	.pipe(dest(path.build.js))
 
-	.pipe(babel())
+	.pipe(babel({
+		presets: ['@babel/preset-env'],
+	}))
 	.pipe(
 		rename({
 			extname: '.es5.js',
