@@ -1,6 +1,7 @@
 node_modules
-.stylelintrc3.json
 dist
-package-lock.json
+min
 
+package-lock.json
 .stylelintrc-copy.json
+.stylelintrc3.json
