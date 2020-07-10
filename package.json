@@ -43,7 +43,6 @@
     "gulp-terser": "^1.2.0",
     "gulp-ttf2woff2": "^3.0.0",
     "gulp-webp": "^4.0.1",
-    "gulp-webp-html": "^1.0.2",
     "gulp-webpcss": "^1.1.1",
     "postcss-import": "^12.0.1",
     "postcss-media-minmax": "^4.0.0",

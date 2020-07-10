@@ -52,7 +52,6 @@ const path = {
 // модули и т.д.
 // HTML
 const htmlInclude = require('gulp-html-tag-include'); // объединение html
-const webpHtml = require('gulp-webp-html'); // webp в html
 const htmlmin = require('gulp-htmlmin'); // min html
 // CSS
 const postcss = require('gulp-postcss'); // postcss
