@@ -68,7 +68,6 @@ const babel = require('gulp-babel'); // babel
 const terser = require('gulp-terser'); // сжатие js
 // IMG
 const webp = require('gulp-webp'); // конвертация в webp
-const imageMin = require('gulp-imagemin'); // сжатие картинок
 // FONTS
 const ttf2woff2 = require('gulp-ttf2woff2'); // ttf2woff2
 const fonter = require('gulp-fonter'); // otf2ttf
