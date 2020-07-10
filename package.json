@@ -6,11 +6,11 @@
   "scripts": {
     "start": "gulp",
     "watchFiles": "gulp watchFiles",
-    "build": "build",
+    "build": "gulp build",
     "html": "gulp html",
     "css": "gulp css",
     "js": "gulp js",
-    "mincssjs": "gulp mincssjs",
+    "min": "gulp min",
     "img": "gulp img",
     "fonts": "gulp fonts fontsStyle",
     "cleanSRC": "gulp cleanSRC",
