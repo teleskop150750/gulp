@@ -79,7 +79,10 @@ const browserSync = require('browser-sync').create(); // браузер
 
 // HTML
 
-const html = () => src(path.src.html).pipe(htmlInclude()).pipe(webpHtml()).pipe(dest(path.build.html))
+const html = () => src(path.src.html)
+	.pipe(htmlInclude())
+	.pipe(webpHtml())
+	.pipe(dest(path.build.html))
 	.pipe(browserSync.stream());
 
 // CSS
