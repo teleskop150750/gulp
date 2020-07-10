@@ -53,6 +53,7 @@ const path = {
 // HTML
 const htmlInclude = require('gulp-html-tag-include'); // объединение html
 const webpHtml = require('gulp-webp-html'); // webp в html
+const htmlmin = require('gulp-htmlmin'); // min html
 // CSS
 const postcss = require('gulp-postcss'); // postcss
 const importcss = require('postcss-import'); // import css
@@ -115,30 +116,39 @@ const js = () => src(path.src.js)
 
 // min HTML CSS JS
 
-const min = () => src([`${path.build.css}index.css`]) // сжимаем css
+const minHTML = () => src([`${path.build.html}index.html`]) // сжимаем css
+	.pipe(htmlmin({
+		removeComments: true,
+		collapseWhitespace: true,
+	}))
+	.pipe(dest(path.minBuild.html));
+
+const minCSS = () => src([`${path.build.css}index.css`]) // сжимаем css
 	.pipe(postcss([cssnano()]))
 	.pipe(
 		rename({
 			extname: '.min.css',
 		}),
 	)
-	.pipe(dest(path.minBuild.css))
-// сжимаем js
-	.pipe(src(['dist/index.js']))
+	.pipe(dest(path.minBuild.css));
+
+const minJS = () => src([`${path.build.js}index.js`, `${path.build.js}index.es5.js`])
+	.pipe(src([`${path.build.js}*.js`]))
 	.pipe(terser())
-	// .pipe(
-	// 	rename({
-	// 		extname: '.min.js',
-	// 	}),
-	// )
-	// .pipe(dest(path.minBuild.js))
-	.pipe(src([
-		`${distFolder}/fonts/**/*`,
-		`${distFolder}/img/**/*`,
-	],
-	{
-		base: distFolder,
-	}))
+	.pipe(
+		rename({
+			extname: '.min.js',
+		}),
+	)
+	.pipe(dest(path.minBuild.js));
+
+const copy = () => src([
+	`${distFolder}/fonts/**/*`,
+	`${distFolder}/img/**/*`,
+],
+{
+	base: distFolder,
+})
 	.pipe(dest(minFolder))
 	.pipe(browserSync.stream());
 
@@ -255,6 +265,6 @@ exports.build = build;
 exports.browser = browser;
 exports.watchFiles = watchFiles;
 
-exports.min = series(cleanMin, min);
+exports.min = series(cleanMin, parallel(minHTML, minCSS, minJS, copy));
 
 exports.default = series(build, watchBrowser);
