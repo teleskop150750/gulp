@@ -119,18 +119,18 @@ const js = () => src(path.src.js)
 
 // min HTML CSS JS
 
-const minHTML = () => src([`${path.build.html}index.html`]) // сжимаем css
+const minHTML = () => src([`${path.build.html}*.html`]) // сжимаем css
 	.pipe(htmlmin({
 		removeComments: true,
 		collapseWhitespace: true,
 	}))
 	.pipe(dest(path.minBuild.html));
 
-const minCSS = () => src([`${path.build.css}index.css`]) // сжимаем css
+const minCSS = () => src([`${path.build.css}*.css`]) // сжимаем css
 	.pipe(postcss([cssnano()]))
 	.pipe(dest(path.minBuild.css));
 
-const minJS = () => src([`${path.build.js}index.js`, `${path.build.js}index.es5.js`])
+const minJS = () => src([`${path.build.js}*.js`, `${path.build.js}*.es5.js`])
 	.pipe(src([`${path.build.js}*.js`]))
 	.pipe(terser())
 	.pipe(dest(path.minBuild.js));
