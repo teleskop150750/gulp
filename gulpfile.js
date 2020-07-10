@@ -10,7 +10,7 @@ const srcFolder = 'src';
 const fs = require('fs');
 
 const {
-	src, dest, parallel, series, lastRun, watch,
+	src, dest, parallel, series, watch,
 } = require('gulp');
 
 // пути
