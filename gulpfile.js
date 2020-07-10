@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 /* eslint-disable max-len */
 // папка проекта
 const distFolder = 'dist';
@@ -251,6 +252,13 @@ const build = series(clean, parallel(js, css, html, img, series(parallel(ttf, ot
 // запустить watcher и браузер
 const watchBrowser = parallel(watchFiles, browser);
 
+const bab = () => src('app.js')
+	.pipe(babel({
+		presets: ['@babel/preset-env'],
+	}))
+	.pipe(dest('dist'));
+
+exports.bab = bab;
 exports.html = html;
 exports.css = css;
 exports.js = js;
