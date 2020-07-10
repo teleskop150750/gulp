@@ -71,6 +71,7 @@ const webp = require('gulp-webp'); // конвертация в webp
 const imageMin = require('gulp-imagemin'); // сжатие картинок
 // FONTS
 const ttf2woff2 = require('gulp-ttf2woff2'); // ttf2woff2
+const fonter = require('gulp-fonter'); // otf2ttf
 // работа с файлами
 const del = require('del'); // удалить папки/файлы
 const rename = require('gulp-rename'); // переименовать файл
@@ -174,8 +175,17 @@ const img = (cb) => {
 
 // fonts
 
-const fonts = () => src(`${path.src.fonts}*.ttf`)
+const ttf = () => src(`${path.src.fonts}*.ttf`)
 	.pipe(ttf2woff2())
+	.pipe(dest(path.src.fonts))
+
+	.pipe(src(`${path.src.fonts}*.woff2`))
+	.pipe(dest(path.build.fonts));
+
+const otf = () => src(`${path.src.fonts}*.otf`)
+	.pipe(fonter({
+		formats: ['ttf'],
+	}))
 	.pipe(dest(path.src.fonts))
 
 	.pipe(src(`${path.src.fonts}*.woff2`))
@@ -217,7 +227,7 @@ const clean = () => del(path.clean);
 
 // удалить jpg, png, ttf
 
-const cleanSRC = () => del(['src/blocks/**/img/*.{jpg,png}', `${path.src.fonts}*.ttf`]);
+const cleanSRC = () => del(['src/blocks/**/img/*.{jpg,png}', `${path.src.fonts}*.{ttf,otf,}`]);
 
 // clean
 
@@ -245,7 +255,7 @@ const watchFiles = () => {
 };
 
 // cобрать проект
-const build = series(clean, parallel(js, css, html, img, series(fonts, fontsStyle)));
+const build = series(clean, parallel(js, css, html, img, series(parallel(ttf, otf), fontsStyle)));
 // запустить watcher и браузер
 const watchBrowser = parallel(watchFiles, browser);
 
@@ -254,7 +264,7 @@ exports.css = css;
 exports.js = js;
 
 exports.img = img;
-exports.fonts = fonts;
+exports.fonts = parallel(ttf, otf);
 exports.fontsStyle = fontsStyle;
 
 exports.clean = clean;
