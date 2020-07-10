@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 // папка проекта
 const distFolder = 'dist';
 // сжатый проект
@@ -52,6 +53,7 @@ const path = {
 // HTML
 const htmlInclude = require('gulp-html-tag-include'); // объединение html
 const webpHtml = require('gulp-webp-html'); // webp в html
+const htmlmin = require('gulp-htmlmin'); // min html
 // CSS
 const postcss = require('gulp-postcss'); // postcss
 const importcss = require('postcss-import'); // import css
@@ -77,10 +79,7 @@ const browserSync = require('browser-sync').create(); // браузер
 
 // HTML
 
-const html = () => src(path.src.html)
-	.pipe(htmlInclude())
-	.pipe(webpHtml())
-	.pipe(dest(path.build.html))
+const html = () => src(path.src.html).pipe(htmlInclude()).pipe(webpHtml()).pipe(dest(path.build.html))
 	.pipe(browserSync.stream());
 
 // CSS
@@ -106,9 +105,7 @@ const js = () => src(path.src.js)
 	.pipe(fileInclude())
 	.pipe(dest(path.build.js))
 
-	.pipe(
-		babel(),
-	)
+	.pipe(babel())
 	.pipe(
 		rename({
 			extname: '.es5.js',
@@ -117,26 +114,43 @@ const js = () => src(path.src.js)
 	.pipe(dest(path.build.js))
 	.pipe(browserSync.stream());
 
-// min JS & CSS
+// min HTML CSS JS
 
-const minjs = () => src([`${path.build.js}index.js`, `${path.build.js}index.es5.js`])
-	.pipe(terser())
-	.pipe(
-		rename({
-			extname: '.min.js',
-		}),
-	)
-	.pipe(dest(path.build.js))
-	.pipe(browserSync.stream());
+const minHTML = () => src([`${path.build.html}index.html`]) // сжимаем css
+	.pipe(htmlmin({
+		removeComments: true,
+		collapseWhitespace: true,
+	}))
+	.pipe(dest(path.minBuild.html));
 
-const mincss = () => src([`${path.build.css}index.css`])
+const minCSS = () => src([`${path.build.css}index.css`]) // сжимаем css
 	.pipe(postcss([cssnano()]))
 	.pipe(
 		rename({
 			extname: '.min.css',
 		}),
 	)
-	.pipe(dest(path.build.css));
+	.pipe(dest(path.minBuild.css));
+
+const minJS = () => src([`${path.build.js}index.js`, `${path.build.js}index.es5.js`])
+	.pipe(src([`${path.build.js}*.js`]))
+	.pipe(terser())
+	.pipe(
+		rename({
+			extname: '.min.js',
+		}),
+	)
+	.pipe(dest(path.minBuild.js));
+
+const copy = () => src([
+	`${distFolder}/fonts/**/*`,
+	`${distFolder}/img/**/*`,
+],
+{
+	base: distFolder,
+})
+	.pipe(dest(minFolder))
+	.pipe(browserSync.stream());
 
 // img
 
@@ -202,7 +216,12 @@ const fontsStyle = (cb) => {
 const clean = () => del(path.clean);
 
 // удалить jpg, png, ttf
+
 const cleanSRC = () => del(['src/blocks/**/img/*.{jpg,png}', `${path.src.fonts}*.ttf`]);
+
+// clean
+
+const cleanMin = () => del(minFolder);
 
 // syns
 
@@ -226,27 +245,26 @@ const watchFiles = () => {
 };
 
 // cобрать проект
-const build = series(
-	clean, parallel(series(js, minjs), css, html, img, fonts),
-	fontsStyle,
-);
-// запустить собранный проект
+const build = series(clean, parallel(js, css, html, img, series(fonts, fontsStyle)));
+// запустить watcher и браузер
 const watchBrowser = parallel(watchFiles, browser);
 
 exports.html = html;
 exports.css = css;
 exports.js = js;
-exports.mincssjs = parallel(mincss, minjs);
 
 exports.img = img;
 exports.fonts = fonts;
 exports.fontsStyle = fontsStyle;
 
+exports.clean = clean;
+exports.cleanSRC = cleanSRC;
+exports.cleanMin = cleanMin;
+
+exports.build = build;
 exports.browser = browser;
 exports.watchFiles = watchFiles;
 
-exports.clean = clean;
-exports.cleanSRC = cleanSRC;
+exports.min = series(cleanMin, parallel(minHTML, minCSS, minJS, copy));
 
-exports.build = build;
 exports.default = series(build, watchBrowser);
