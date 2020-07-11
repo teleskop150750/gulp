@@ -11,6 +11,7 @@ const fs = require('fs');
 const {
 	src, dest, parallel, series, watch,
 } = require('gulp');
+const webpack = require('webpack-stream');
 
 // пути
 const path = {
@@ -47,6 +48,15 @@ const path = {
 	},
 	// очистка
 	clean: `./${distFolder}/`,
+};
+
+const webpackConfig = {
+	output: {
+		filename: 'index.js',
+	},
+	optimization: {
+		minimize: false,
+	},
 };
 
 // модули и т.д.
@@ -103,17 +113,7 @@ const css = () => src(path.src.css)
 // JS
 
 const js = () => src(path.src.js)
-	.pipe(fileInclude()) // собироваем в один файл
-	.pipe(dest(path.build.js))
-
-	.pipe(babel({
-		presets: ['@babel/preset-env'],
-	})) // babel
-	.pipe(
-		rename({
-			extname: '.es5.js',
-		}),
-	)
+	.pipe(webpack(webpackConfig))
 	.pipe(dest(path.build.js))
 	.pipe(browserSync.stream());
 
