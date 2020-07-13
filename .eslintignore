@@ -1,4 +1,5 @@
 /**/node_modules/*
 src/**/index.js
+src/js/libs/
 dist/index.es5.js
 min/*
