@@ -9,44 +9,44 @@ const srcFolder = 'src';
 const fs = require('fs');
 
 const {
-	src, dest, parallel, series, watch,
+  src, dest, parallel, series, watch,
 } = require('gulp');
 
 // пути
 const path = {
-	// проект
-	build: {
-		html: `${distFolder}/`,
-		css: `${distFolder}/`,
-		js: `${distFolder}/`,
-		img: `${distFolder}/img/`,
-		fonts: `${distFolder}/fonts/`,
-	},
-	// минифицированная версия
-	minBuild: {
-		html: `${minFolder}/`,
-		css: `${minFolder}/`,
-		js: `${minFolder}/`,
-		img: `${minFolder}/img/`,
-		fonts: `${minFolder}/fonts/`,
-	},
-	// исходники
-	src: {
-		html: `${srcFolder}/index.html`,
-		css: `${srcFolder}/css/index.css`,
-		js: `${srcFolder}/js/index.js`,
-		img: `${srcFolder}/**/`,
-		fonts: `${srcFolder}/fonts/`,
-	},
-	// отслеживание
-	watch: {
-		html: `${srcFolder}/**/*.html`,
-		css: `${srcFolder}/**/*.scss`,
-		js: `${srcFolder}/**/*.js`,
-		img: `${srcFolder}/**/`,
-	},
-	// очистка
-	clean: `./${distFolder}/`,
+  // проект
+  build: {
+    html: `${distFolder}/`,
+    css: `${distFolder}/`,
+    js: `${distFolder}/`,
+    img: `${distFolder}/img/`,
+    fonts: `${distFolder}/fonts/`,
+  },
+  // минифицированная версия
+  minBuild: {
+    html: `${minFolder}/`,
+    css: `${minFolder}/`,
+    js: `${minFolder}/`,
+    img: `${minFolder}/img/`,
+    fonts: `${minFolder}/fonts/`,
+  },
+  // исходники
+  src: {
+    html: `${srcFolder}/index.html`,
+    css: `${srcFolder}/css/index.css`,
+    js: `${srcFolder}/js/index.js`,
+    img: `${srcFolder}/**/`,
+    fonts: `${srcFolder}/fonts/`,
+  },
+  // отслеживание
+  watch: {
+    html: `${srcFolder}/**/*.html`,
+    css: `${srcFolder}/**/*.scss`,
+    js: `${srcFolder}/**/*.js`,
+    img: `${srcFolder}/**/`,
+  },
+  // очистка
+  clean: `./${distFolder}/`,
 };
 
 // модули и т.д.
@@ -80,136 +80,140 @@ const browserSync = require('browser-sync').create(); // браузер
 // HTML
 
 const html = () => src(path.src.html)
-	.pipe(htmlInclude()) // собироваем в один файл
-	.pipe(dest(path.build.html))
-	.pipe(browserSync.stream());
+  .pipe(htmlInclude()) // собироваем в один файл
+  .pipe(dest(path.build.html))
+  .pipe(browserSync.stream());
 
 // CSS
 
 const css = () => src(path.src.css)
-	.pipe(
-		postcss([
-			importcss(), // собироваем в один файл
-			precss(),
-			media(), // media  в старый формат
-			mqpacker({
-				sort: true,
-			}), // группируем media
-			autoprefixer(), // autoprefixer
-		]),
-	)
-	.pipe(prettier()) // форматирование кода
-	.pipe(dest(path.build.css))
-	.pipe(browserSync.stream());
+  .pipe(
+    postcss([
+      importcss(), // собироваем в один файл
+      precss(),
+      media(), // media  в старый формат
+      mqpacker({
+        sort: true,
+      }), // группируем media
+      autoprefixer(), // autoprefixer
+    ]),
+  )
+  .pipe(prettier()) // форматирование кода
+  .pipe(dest(path.build.css))
+  .pipe(browserSync.stream());
 
 // JS
 
 const js = () => src(path.src.js)
-	.pipe(fileInclude()) // собироваем в один файл
-	.pipe(dest(path.build.js))
+  .pipe(fileInclude()) // собироваем в один файл
+  .pipe(dest(path.build.js))
 
-	.pipe(babel({
-		presets: ['@babel/preset-env'],
-	})) // babel
-	.pipe(
-		rename({
-			extname: '.es5.js',
-		}),
-	)
-	.pipe(dest(path.build.js))
-	.pipe(browserSync.stream());
+  .pipe(
+    babel({
+      presets: ['@babel/preset-env'],
+    }),
+  ) // babel
+  .pipe(
+    rename({
+      extname: '.es5.js',
+    }),
+  )
+  .pipe(dest(path.build.js))
+  .pipe(browserSync.stream());
 
 // min HTML CSS JS
 
 const minHTML = () => src([`${path.build.html}*.html`]) // сжимаем css
-	.pipe(htmlmin({
-		removeComments: true,
-		collapseWhitespace: true,
-	}))
-	.pipe(dest(path.minBuild.html));
+  .pipe(
+    htmlmin({
+      removeComments: true,
+      collapseWhitespace: true,
+    }),
+  )
+  .pipe(dest(path.minBuild.html));
 
 const minCSS = () => src([`${path.build.css}*.css`]) // сжимаем css
-	.pipe(postcss([cssnano()]))
-	.pipe(dest(path.minBuild.css));
+  .pipe(postcss([cssnano()]))
+  .pipe(dest(path.minBuild.css));
 
 const minJS = () => src([`${path.build.js}*.js`, `${path.build.js}*.es5.js`])
-	.pipe(src([`${path.build.js}*.js`]))
-	.pipe(terser())
-	.pipe(dest(path.minBuild.js));
+  .pipe(src([`${path.build.js}*.js`]))
+  .pipe(terser())
+  .pipe(dest(path.minBuild.js));
 
-const copy = () => src([
-	`${distFolder}/fonts/**/*`,
-	`${distFolder}/img/**/*`,
-],
-{
-	base: distFolder,
+const copy = () => src([`${distFolder}/fonts/**/*`, `${distFolder}/img/**/*`], {
+  base: distFolder,
 })
-	.pipe(dest(minFolder))
-	.pipe(browserSync.stream());
+  .pipe(dest(minFolder))
+  .pipe(browserSync.stream());
 
 // img
 
 const img = (cb) => {
-	fs.readdirSync(`${srcFolder}/blocks/`).forEach((block) => {
-		src(`src/blocks/${block}/img/*.{jpg,png,}`)
-			.pipe(
-				webp({
-					quality: 75, // Установите коэффициент качества между 0 и 100
-					method: 4, // Укажите метод сжатия, который будет использоваться между 0(самым быстрым) и 6(самым медленным).
-				}),
-			)
-			.pipe(dest(`${srcFolder}/blocks/${block}/img`))
+  fs.readdirSync(`${srcFolder}/blocks/`).forEach((block) => {
+    src(`src/blocks/${block}/img/*.{jpg,png,}`)
+      .pipe(
+        webp({
+          quality: 75, // Установите коэффициент качества между 0 и 100
+          method: 4, // Укажите метод сжатия, который будет использоваться между 0(самым быстрым) и 6(самым медленным).
+        }),
+      )
+      .pipe(dest(`${srcFolder}/blocks/${block}/img`))
 
-			.pipe(src(`${path.src.img}*.webp`))
-			.pipe(flatten()) // удалить относительный путь к картинке
-			.pipe(dest(path.build.img));
-	});
-	cb();
+      .pipe(src(`${path.src.img}*.webp`))
+      .pipe(flatten()) // удалить относительный путь к картинке
+      .pipe(dest(path.build.img));
+  });
+  cb();
 };
 
 // fonts
 
 const ttf = () => src(`${path.src.fonts}*.ttf`)
-	.pipe(ttf2woff2())
-	.pipe(dest(path.src.fonts))
+  .pipe(ttf2woff2())
+  .pipe(dest(path.src.fonts))
 
-	.pipe(src(`${path.src.fonts}*.woff2`))
-	.pipe(dest(path.build.fonts));
+  .pipe(src(`${path.src.fonts}*.woff2`))
+  .pipe(dest(path.build.fonts));
 
 const otf = () => src(`${path.src.fonts}*.otf`)
-	.pipe(fonter({
-		formats: ['ttf'],
-	}))
-	.pipe(dest(path.src.fonts));
+  .pipe(
+    fonter({
+      formats: ['ttf'],
+    }),
+  )
+  .pipe(dest(path.src.fonts));
 
 // запись шрифтов в fonts.css
 // файл должен быть изначально пустой
 // в конце требуется откорректировать названиие шрифтов и их начертание
 
 const fontsStyle = (cb) => {
-	const fileContent = fs.readFileSync(`${srcFolder}/css/global/fonts.css`).toString(); // получаем содержимое файла
-	// проверяем пустой ли файл
-	if (fileContent === '') {
-		fs.writeFileSync(`${srcFolder}/css/global/fonts.css`, '/* Fonts */\r\n\r\n'); // записываем заглавный комментарий
-		let cFontName = ''; // копия названия файла (шрифта)
-		// читаем содержимое папки
-		fs.readdirSync(path.build.fonts).forEach((item) => {
-			const fontName = item.split('.')[0]; // получаем имя файла (шрифта)
-			// сравниваем с копияей, чтобы исключить повторы
-			if (cFontName !== fontName) {
-				fs.appendFileSync(`${srcFolder}/css/global/fonts.css`, // завписываем структуру подключения в файл
-					`@font-face {
+  const fileContent = fs.readFileSync(`${srcFolder}/css/global/fonts.css`).toString(); // получаем содержимое файла
+  // проверяем пустой ли файл
+  if (fileContent === '') {
+    fs.writeFileSync(`${srcFolder}/css/global/fonts.css`, '/* Fonts */\r\n\r\n'); // записываем заглавный комментарий
+    let cFontName = ''; // копия названия файла (шрифта)
+    // читаем содержимое папки
+    fs.readdirSync(path.build.fonts).forEach((item) => {
+      const fontName = item.split('.')[0]; // получаем имя файла (шрифта)
+      // сравниваем с копияей, чтобы исключить повторы
+      if (cFontName !== fontName) {
+        fs.appendFileSync(
+          `${srcFolder}/css/global/fonts.css`, // завписываем структуру подключения в файл
+          `@font-face {
 	font-family: '${fontName}';
 	font-display: swap;
 	src: url('../fonts/${fontName}.woff2') format('woff2');
 	font-style: normal;
 	font-weight: 400;
-}\r\n\r\n`);
-			}
-			cFontName = fontName;
-		});
-	}
-	cb();
+}\r\n\r\n`,
+        );
+      }
+      cFontName = fontName;
+    });
+  }
+  cb();
 };
 
 // clean
@@ -227,23 +231,23 @@ const cleanMin = () => del(minFolder);
 // syns
 
 const browser = () => {
-	browserSync.init({
-		server: {
-			baseDir: `./${distFolder}/`,
-		},
-		port: 3000,
-		notify: false,
-	});
+  browserSync.init({
+    server: {
+      baseDir: `./${distFolder}/`,
+    },
+    port: 3000,
+    notify: false,
+  });
 };
 
 // watch
 
 const watchFiles = () => {
-	watch(path.watch.html, html);
-	watch(path.watch.css, css);
-	watch(path.watch.js, js);
-	watch(`${path.src.img}*.{jpg,png,}`, img);
-	watch(`${path.src.fonts}*.{otf,ttf,}`, series(otf, ttf));
+  watch(path.watch.html, html);
+  watch(path.watch.css, css);
+  watch(path.watch.js, js);
+  watch(`${path.src.img}*.{jpg,png,}`, img);
+  watch(`${path.src.fonts}*.{otf,ttf,}`, series(otf, ttf));
 };
 
 // cобрать проект
