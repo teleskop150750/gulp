@@ -55,7 +55,7 @@ const htmlInclude = require('gulp-html-tag-include'); // объединение 
 const htmlmin = require('gulp-htmlmin'); // min html
 // CSS
 const postcss = require('gulp-postcss'); // postcss
-const precss = require('precss'); // sass/css
+const precss = require('precss'); // scss в css
 const importcss = require('postcss-import'); // import css
 const media = require('postcss-media-minmax'); // @media (width >= 320px) в @media (min-width: 320px)
 const autoprefixer = require('autoprefixer'); // autoprefixer
@@ -90,7 +90,7 @@ const css = () => src(path.src.css)
   .pipe(
     postcss([
       importcss(), // собироваем в один файл
-      precss(),
+      precss(), // scss в css
       media(), // media  в старый формат
       mqpacker({
         sort: true,
