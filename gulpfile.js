@@ -45,8 +45,6 @@ const path = {
     js: `${srcFolder}/**/*.js`,
     img: `${srcFolder}/**/`,
   },
-  // очистка
-  clean: `./${distFolder}/`,
 };
 
 // модули и т.д.
@@ -75,7 +73,7 @@ const fonter = require('gulp-fonter'); // otf2ttf
 const del = require('del'); // удалить папки/файлы
 const rename = require('gulp-rename'); // переименовать файл
 const flatten = require('gulp-flatten'); // работа с путями к файлу
-const browserSync = require('browser-sync').create(); // браузер
+const browserSync = require('browser-sync'); // браузер
 
 // HTML
 
@@ -152,6 +150,9 @@ const copy = () => src([`${distFolder}/fonts/**/*`, `${distFolder}/img/**/*`], {
 const img = (cb) => {
   fs.readdirSync(`${srcFolder}/blocks/`).forEach((block) => {
     src(`src/blocks/${block}/img/*.{jpg,png,}`)
+      .on('data', (file) => {
+        del(`${srcFolder}/blocks/${block}/img/${file.basename}`);
+      })
       .pipe(
         webp({
           quality: 75, // Установите коэффициент качества между 0 и 100
@@ -170,6 +171,9 @@ const img = (cb) => {
 // fonts
 
 const ttf = () => src(`${path.src.fonts}*.ttf`)
+  .on('data', (file) => {
+    del(path.src.fonts + file.basename);
+  })
   .pipe(ttf2woff2())
   .pipe(dest(path.src.fonts))
 
@@ -177,6 +181,9 @@ const ttf = () => src(`${path.src.fonts}*.ttf`)
   .pipe(dest(path.build.fonts));
 
 const otf = () => src(`${path.src.fonts}*.otf`)
+  .on('data', (file) => {
+    del(path.src.fonts + file.basename);
+  })
   .pipe(
     fonter({
       formats: ['ttf'],
@@ -216,15 +223,11 @@ const fontsStyle = (cb) => {
   cb();
 };
 
-// clean
+// clean dist
 
-const clean = () => del(path.clean);
+const clean = () => del(distFolder);
 
-// удалить jpg, png, ttf
-
-const cleanSRC = () => del(['src/blocks/**/img/*.{jpg,png}', `${path.src.fonts}*.{ttf,otf,}`]);
-
-// clean
+// clean min
 
 const cleanMin = () => del(minFolder);
 
@@ -270,7 +273,6 @@ exports.fonts = parallel(ttf, otf);
 exports.fontsStyle = fontsStyle;
 
 exports.clean = clean;
-exports.cleanSRC = cleanSRC;
 exports.cleanMin = cleanMin;
 
 exports.min = series(cleanMin, parallel(minHTML, minCSS, minJS, copy));

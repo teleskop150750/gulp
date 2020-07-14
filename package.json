@@ -12,7 +12,6 @@
     "js": "gulp js",
     "img": "gulp img",
     "fonts": "gulp fonts fontsStyle",
-    "cleanSRC": "gulp cleanSRC",
     "min": "gulp min"
   },
   "author": "teleskop150750",
