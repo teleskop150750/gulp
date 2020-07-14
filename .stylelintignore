@@ -1,3 +1,4 @@
-/**/node_modules/*
-src/css/libs/*
-min/*
+/node_modules/
+/min/
+
+/src/css/libs/
