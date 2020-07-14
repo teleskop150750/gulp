@@ -1,16 +1,43 @@
-/* eslint-disable max-len */
-// папка проекта
-const distFolder = 'dist';
-// сжатый проект
-const minFolder = 'min';
-// папка исходников
-const srcFolder = 'src';
-// файловая система
-const fs = require('fs');
+// модули
+const gulp = require('gulp'); // gulp
+// HTML
+const htmlInclude = require('gulp-html-tag-include'); // объединение html
+const htmlmin = require('gulp-htmlmin'); // min html
+// CSS
+const postcss = require('gulp-postcss'); // postcss
+const scss = require('postcss-nested'); // позволяет использовать вложенность scss
+const importcss = require('postcss-import'); // import css
+const media = require('postcss-media-minmax'); // @media (width >= 320px) в @media (min-width: 320px)
+const autoprefixer = require('autoprefixer'); // autoprefixer
+const mqpacker = require('css-mqpacker'); // группирует @media
+const prettier = require('gulp-prettier'); // prettier
+const cssnano = require('cssnano'); // сжатие css
+// JS
+const fileInclude = require('gulp-file-include'); // подключение файлов (работает для всех)
+const babel = require('gulp-babel'); // babel
+const terser = require('gulp-terser'); // сжатие js
+// IMG
+const webp = require('gulp-webp'); // конвертация в webp
+// FONTS
+const ttf2woff2 = require('gulp-ttf2woff2'); // ttf2woff2
+const fonter = require('gulp-fonter'); // otf2ttf
+// работа с файлами
+const fs = require('fs'); // файловая система
+const del = require('del'); // удалить папки/файлы
+const rename = require('gulp-rename'); // переименовать файл
+const flatten = require('gulp-flatten'); // работа с путями к файлу
+const browserSync = require('browser-sync'); // браузер
 
 const {
   src, dest, parallel, series, watch,
-} = require('gulp');
+} = gulp;
+
+// папка проекта
+const distFolder = 'dist';
+// папка c сжатым проектом
+const minFolder = 'min';
+// папка исходников
+const srcFolder = 'src';
 
 // пути
 const path = {
@@ -46,34 +73,6 @@ const path = {
     img: `${srcFolder}/**/`,
   },
 };
-
-// модули и т.д.
-// HTML
-const htmlInclude = require('gulp-html-tag-include'); // объединение html
-const htmlmin = require('gulp-htmlmin'); // min html
-// CSS
-const postcss = require('gulp-postcss'); // postcss
-const scss = require('postcss-nested'); // позволяет использовать вложенность scss
-const importcss = require('postcss-import'); // import css
-const media = require('postcss-media-minmax'); // @media (width >= 320px) в @media (min-width: 320px)
-const autoprefixer = require('autoprefixer'); // autoprefixer
-const mqpacker = require('css-mqpacker'); // группирует @media
-const prettier = require('gulp-prettier'); // prettier
-const cssnano = require('cssnano'); // сжатие css
-// JS
-const fileInclude = require('gulp-file-include'); // подключение файлов (работает для всех)
-const babel = require('gulp-babel'); // babel
-const terser = require('gulp-terser'); // сжатие js
-// IMG
-const webp = require('gulp-webp'); // конвертация в webp
-// FONTS
-const ttf2woff2 = require('gulp-ttf2woff2'); // ttf2woff2
-const fonter = require('gulp-fonter'); // otf2ttf
-// работа с файлами
-const del = require('del'); // удалить папки/файлы
-const rename = require('gulp-rename'); // переименовать файл
-const flatten = require('gulp-flatten'); // работа с путями к файлу
-const browserSync = require('browser-sync'); // браузер
 
 // HTML
 
@@ -119,32 +118,6 @@ const js = () => src(path.src.js)
   .pipe(dest(path.build.js))
   .pipe(browserSync.stream());
 
-// min HTML CSS JS
-
-const minHTML = () => src([`${path.build.html}*.html`]) // сжимаем css
-  .pipe(
-    htmlmin({
-      removeComments: true,
-      collapseWhitespace: true,
-    }),
-  )
-  .pipe(dest(path.minBuild.html));
-
-const minCSS = () => src([`${path.build.css}*.css`]) // сжимаем css
-  .pipe(postcss([cssnano()]))
-  .pipe(dest(path.minBuild.css));
-
-const minJS = () => src([`${path.build.js}*.js`, `${path.build.js}*.es5.js`])
-  .pipe(src([`${path.build.js}*.js`]))
-  .pipe(terser())
-  .pipe(dest(path.minBuild.js));
-
-const copy = () => src([`${distFolder}/fonts/**/*`, `${distFolder}/img/**/*`], {
-  base: distFolder,
-})
-  .pipe(dest(minFolder))
-  .pipe(browserSync.stream());
-
 // img
 
 const img = (cb) => {
@@ -170,16 +143,6 @@ const img = (cb) => {
 
 // fonts
 
-const ttf = () => src(`${path.src.fonts}*.ttf`)
-  .on('data', (file) => {
-    del(path.src.fonts + file.basename);
-  })
-  .pipe(ttf2woff2())
-  .pipe(dest(path.src.fonts))
-
-  .pipe(src(`${path.src.fonts}*.woff2`))
-  .pipe(dest(path.build.fonts));
-
 const otf = () => src(`${path.src.fonts}*.otf`)
   .on('data', (file) => {
     del(path.src.fonts + file.basename);
@@ -190,6 +153,16 @@ const otf = () => src(`${path.src.fonts}*.otf`)
     }),
   )
   .pipe(dest(path.src.fonts));
+
+const ttf = () => src(`${path.src.fonts}*.ttf`)
+  .on('data', (file) => {
+    del(path.src.fonts + file.basename);
+  })
+  .pipe(ttf2woff2())
+  .pipe(dest(path.src.fonts))
+
+  .pipe(src(`${path.src.fonts}*.woff2`))
+  .pipe(dest(path.build.fonts));
 
 // запись шрифтов в fonts.css
 // файл должен быть изначально пустой
@@ -223,6 +196,32 @@ const fontsStyle = (cb) => {
   cb();
 };
 
+// min HTML CSS JS
+
+const minHTML = () => src([`${path.build.html}*.html`]) // сжимаем css
+  .pipe(
+    htmlmin({
+      removeComments: true,
+      collapseWhitespace: true,
+    }),
+  )
+  .pipe(dest(path.minBuild.html));
+
+const minCSS = () => src([`${path.build.css}*.css`]) // сжимаем css
+  .pipe(postcss([cssnano()]))
+  .pipe(dest(path.minBuild.css));
+
+const minJS = () => src([`${path.build.js}*.js`, `${path.build.js}*.es5.js`])
+  .pipe(src([`${path.build.js}*.js`]))
+  .pipe(terser())
+  .pipe(dest(path.minBuild.js));
+
+const copy = () => src([`${distFolder}/fonts/**/*`, `${distFolder}/img/**/*`], {
+  base: distFolder,
+})
+  .pipe(dest(minFolder))
+  .pipe(browserSync.stream());
+
 // clean dist
 
 const clean = () => del(distFolder);
@@ -254,11 +253,30 @@ const watchFiles = () => {
 };
 
 // cобрать проект
-const build = series(clean, parallel(html, css, js, img, series(series(otf, ttf), fontsStyle)));
+const build = series(
+  clean,
+  parallel(
+    html,
+    css,
+    js,
+    img,
+    series(
+      otf,
+      ttf,
+      fontsStyle,
+    ),
+  ),
+);
 // запустить watcher и браузер
-const watchBrowser = parallel(watchFiles, browser);
+const watchBrowser = parallel(
+  watchFiles,
+  browser,
+);
 
-exports.default = series(build, watchBrowser);
+exports.default = series(
+  build,
+  watchBrowser,
+);
 
 exports.build = build;
 exports.watchFiles = watchFiles;
@@ -269,10 +287,21 @@ exports.css = css;
 exports.js = js;
 
 exports.img = img;
-exports.fonts = parallel(ttf, otf);
-exports.fontsStyle = fontsStyle;
+exports.fonts = series(
+  otf,
+  ttf,
+  fontsStyle,
+);
 
 exports.clean = clean;
 exports.cleanMin = cleanMin;
 
-exports.min = series(cleanMin, parallel(minHTML, minCSS, minJS, copy));
+exports.min = series(
+  cleanMin,
+  parallel(
+    minHTML,
+    minCSS,
+    minJS,
+    copy,
+  ),
+);
