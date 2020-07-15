@@ -62,15 +62,15 @@ const path = {
     html: `${srcFolder}/index.html`,
     css: `${srcFolder}/css/index.css`,
     js: `${srcFolder}/js/index.js`,
-    img: `${srcFolder}/**/`,
+    img: `${srcFolder}/`,
     fonts: `${srcFolder}/fonts/`,
   },
   // отслеживание
   watch: {
     html: `${srcFolder}/**/*.html`,
-    css: `${srcFolder}/**/*.scss`,
+    css: `${srcFolder}/**/*.css`,
     js: `${srcFolder}/**/*.js`,
-    img: `${srcFolder}/**/`,
+    img: `${srcFolder}/**/img/*`,
   },
 };
 
@@ -248,7 +248,7 @@ const watchFiles = () => {
   watch(path.watch.html, html);
   watch(path.watch.css, css);
   watch(path.watch.js, js);
-  watch(`${path.src.img}*.{jpg,png,}`, img);
+  watch(`${path.src.img}`, img);
   watch(`${path.src.fonts}*.{otf,ttf,}`, series(otf, ttf));
 };
 
