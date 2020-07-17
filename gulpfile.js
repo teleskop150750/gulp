@@ -133,15 +133,14 @@ const img = (cb) => {
           method: 4, // Укажите метод сжатия, который будет использоваться между 0(самым быстрым) и 6(самым медленным).
         }),
       )
-      .pipe(dest(`${srcFolder}/blocks/${block}/img/`));
+      .pipe(dest(`${srcFolder}/blocks/${block}/img/`))
+
+      .pipe(src(`${path.src.img}*.webp`))
+      .pipe(flatten()) // удалить относительный путь к картинке
+      .pipe(dest(path.build.img));
   });
   cb();
 };
-
-const copyWebp = () => src(`${path.src.img}*.webp`)
-  .pipe(flatten()) // удалить относительный путь к картинке
-  .pipe(dest(path.build.img))
-  .pipe(browserSync.stream());
 
 // fonts
 
@@ -164,8 +163,7 @@ const ttf = () => src(`${path.src.fonts}*.ttf`)
   .pipe(dest(path.src.fonts));
 
 const copyWoff2 = () => src(`${path.src.fonts}*.woff2`)
-  .pipe(dest(path.build.fonts))
-  .pipe(browserSync.stream());
+  .pipe(dest(path.build.fonts));
 
 // запись шрифтов в fonts.css
 // файл должен быть изначально пустой
@@ -222,8 +220,7 @@ const minJS = () => src([`${path.build.js}*.js`, `${path.build.js}*.es5.js`])
 const copy = () => src([`${distFolder}/fonts/**/*`, `${distFolder}/img/**/*`], {
   base: distFolder,
 })
-  .pipe(dest(minFolder))
-  .pipe(browserSync.stream());
+  .pipe(dest(minFolder));
 
 // clean dist
 
@@ -252,7 +249,7 @@ const watchFiles = () => {
   watch(path.watch.css, css);
   watch(path.watch.js, js);
   watch(path.watch.img, series(
-    img, copyWebp,
+    img,
   ));
   watch(path.watch.fonts, series(
     otf, ttf, copyWoff2,
@@ -268,7 +265,6 @@ const build = series(
     js,
     series(
       img,
-      copyWebp,
     ),
     series(
       otf,
@@ -299,7 +295,6 @@ exports.js = js;
 
 exports.img = series(
   img,
-  copyWebp,
 );
 
 exports.fonts = series(
