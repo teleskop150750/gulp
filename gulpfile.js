@@ -62,8 +62,8 @@ const path = {
     html: `${srcFolder}/index.html`,
     css: `${srcFolder}/css/index.css`,
     js: `${srcFolder}/js/index.js`,
-    img: `${srcFolder}/`,
-    fonts: `${srcFolder}/fonts/`,
+    img: `${srcFolder}/**/img/*`,
+    fonts: `${srcFolder}/fonts/*`,
   },
   // отслеживание
   watch: {
@@ -71,6 +71,7 @@ const path = {
     css: `${srcFolder}/**/*.css`,
     js: `${srcFolder}/**/*.js`,
     img: `${srcFolder}/**/img/*`,
+    fonts: `${srcFolder}/fonts/*`,
   },
 };
 
@@ -122,7 +123,7 @@ const js = () => src(path.src.js)
 
 const img = (cb) => {
   fs.readdirSync(`${srcFolder}/blocks/`).forEach((block) => {
-    src(`src/blocks/${block}/img/*.{jpg,png,}`)
+    src(`${srcFolder}/blocks/${block}/img/*.{jpg,png,}`)
       .on('data', (file) => {
         del(`${srcFolder}/blocks/${block}/img/${file.basename}`);
       })
@@ -132,14 +133,15 @@ const img = (cb) => {
           method: 4, // Укажите метод сжатия, который будет использоваться между 0(самым быстрым) и 6(самым медленным).
         }),
       )
-      .pipe(dest(`${srcFolder}/blocks/${block}/img`))
-
-      .pipe(src(`${path.src.img}*.webp`))
-      .pipe(flatten()) // удалить относительный путь к картинке
-      .pipe(dest(path.build.img));
+      .pipe(dest(`${srcFolder}/blocks/${block}/img/`));
   });
   cb();
 };
+
+const copyWebp = () => src(`${path.src.img}*.webp`)
+  .pipe(flatten()) // удалить относительный путь к картинке
+  .pipe(dest(path.build.img))
+  .pipe(browserSync.stream());
 
 // fonts
 
@@ -163,6 +165,10 @@ const ttf = () => src(`${path.src.fonts}*.ttf`)
 
   .pipe(src(`${path.src.fonts}*.woff2`))
   .pipe(dest(path.build.fonts));
+
+const copyWoff2 = () => src(`${path.src.fonts}*.woff2`)
+  .pipe(dest(path.build.fonts))
+  .pipe(browserSync.stream());
 
 // запись шрифтов в fonts.css
 // файл должен быть изначально пустой
@@ -248,8 +254,12 @@ const watchFiles = () => {
   watch(path.watch.html, html);
   watch(path.watch.css, css);
   watch(path.watch.js, js);
-  watch(`${path.src.img}`, img);
-  watch(`${path.src.fonts}*.{otf,ttf,}`, series(otf, ttf));
+  watch(path.watch.img, series(
+    img, copyWebp,
+  ));
+  watch(path.watch.fonts, series(
+    otf, ttf, copyWoff2,
+  ));
 };
 
 // cобрать проект
@@ -285,11 +295,16 @@ exports.browser = browser;
 exports.html = html;
 exports.css = css;
 exports.js = js;
+exports.copyWebp = copyWebp;
 
-exports.img = img;
+exports.img = series(
+  img,
+  copyWebp,
+);
 exports.fonts = series(
   otf,
   ttf,
+  copyWoff2,
   fontsStyle,
 );
 
