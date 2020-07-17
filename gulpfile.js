@@ -62,8 +62,8 @@ const path = {
     html: `${srcFolder}/index.html`,
     css: `${srcFolder}/css/index.css`,
     js: `${srcFolder}/js/index.js`,
-    img: `${srcFolder}/**/img/*`,
-    fonts: `${srcFolder}/fonts/*`,
+    img: `${srcFolder}/**/img/`,
+    fonts: `${srcFolder}/fonts/`,
   },
   // отслеживание
   watch: {
