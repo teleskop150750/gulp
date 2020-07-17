@@ -8,7 +8,7 @@
     "css": "gulp css",
     "js": "gulp js",
     "img": "gulp img",
-    "fonts": "gulp fonts fontsStyle",
+    "fonts": "gulp fonts",
     "min": "gulp min"
   },
   "devDependencies": {
