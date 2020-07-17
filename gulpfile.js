@@ -133,14 +133,19 @@ const img = (cb) => {
           method: 4, // Укажите метод сжатия, который будет использоваться между 0(самым быстрым) и 6(самым медленным).
         }),
       )
-      .pipe(dest(`${srcFolder}/blocks/${block}/img/`))
+      .pipe(dest(`${srcFolder}/blocks/${block}/img/`));
 
-      .pipe(src(`${path.src.img}*.webp`))
-      .pipe(flatten()) // удалить относительный путь к картинке
-      .pipe(dest(path.build.img));
+    // .pipe(src(`${path.src.img}*.webp`))
+    // .pipe(flatten()) // удалить относительный путь к картинке
+    // .pipe(dest(path.build.img));
   });
   cb();
 };
+
+const copyWebp = () => src('src/**/img/*.webp')
+  .pipe(flatten()) // удалить относительный путь к картинке
+  .pipe(dest(path.build.img))
+  .pipe(browserSync.stream());
 
 // fonts
 
@@ -289,7 +294,13 @@ exports.html = html;
 exports.css = css;
 exports.js = js;
 
+exports.otf = otf;
+exports.ttf = ttf;
+exports.copyWoff2 = copyWoff2;
+
 exports.img = img;
+exports.img2 = copyWebp;
+exports.img3 = series(img, copyWebp);
 
 exports.fonts = series(
   otf,
