@@ -122,7 +122,8 @@ const js = () => src(path.src.js)
 // img
 
 const img = (cb) => {
-  fs.readdirSync(`${srcFolder}/blocks/`).forEach((block) => {
+  const blocks = fs.readdirSync(`${srcFolder}/blocks/`);
+  blocks.forEach((block) => {
     src(`${srcFolder}/blocks/${block}/img/*.{jpg,png,}`)
       .on('data', (file) => {
         del(`${srcFolder}/blocks/${block}/img/${file.basename}`);
@@ -134,10 +135,6 @@ const img = (cb) => {
         }),
       )
       .pipe(dest(`${srcFolder}/blocks/${block}/img/`));
-
-    // .pipe(src(`${path.src.img}*.webp`))
-    // .pipe(flatten()) // удалить относительный путь к картинке
-    // .pipe(dest(path.build.img));
   });
   cb();
 };
@@ -299,7 +296,10 @@ exports.copyWoff2 = copyWoff2;
 
 exports.img1 = img;
 exports.img2 = copyWebp;
-exports.img = series(img, copyWebp);
+exports.img = series(
+  img,
+  copyWebp,
+);
 
 exports.fonts = series(
   otf,
