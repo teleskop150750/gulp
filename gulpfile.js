@@ -161,10 +161,7 @@ const ttf = () => src(`${path.src.fonts}*.ttf`)
     del(path.src.fonts + file.basename);
   })
   .pipe(ttf2woff2())
-  .pipe(dest(path.src.fonts))
-
-  .pipe(src(`${path.src.fonts}*.woff2`))
-  .pipe(dest(path.build.fonts));
+  .pipe(dest(path.src.fonts));
 
 const copyWoff2 = () => src(`${path.src.fonts}*.woff2`)
   .pipe(dest(path.build.fonts))
@@ -271,14 +268,14 @@ const build = series(
     js,
     series(
       img,
-      copyWebp,
     ),
     series(
       otf,
       ttf,
-      fontsStyle,
     ),
   ),
+  copyWebp,
+  fontsStyle,
 );
 // запустить watcher и браузер
 const watchBrowser = parallel(
