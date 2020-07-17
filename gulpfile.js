@@ -301,6 +301,7 @@ exports.img = series(
   img,
   copyWebp,
 );
+
 exports.fonts = series(
   otf,
   ttf,
