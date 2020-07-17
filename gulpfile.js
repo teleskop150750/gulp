@@ -268,14 +268,15 @@ const build = series(
     js,
     series(
       img,
+      copyWebp,
     ),
     series(
       otf,
       ttf,
+      copyWoff2,
+      fontsStyle,
     ),
   ),
-  copyWebp,
-  fontsStyle,
 );
 // запустить watcher и браузер
 const watchBrowser = parallel(
@@ -295,7 +296,6 @@ exports.browser = browser;
 exports.html = html;
 exports.css = css;
 exports.js = js;
-exports.copyWebp = copyWebp;
 
 exports.img = series(
   img,
