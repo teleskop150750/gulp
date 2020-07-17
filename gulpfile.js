@@ -122,9 +122,8 @@ const js = () => src(path.src.js)
 // img
 
 const img = (cb) => {
-  const blocks = fs.readdirSync(`${srcFolder}/blocks/`);
-  blocks.forEach((block) => {
-    src(`${srcFolder}/blocks/${block}/img/*.{jpg,png,}`)
+  fs.readdirSync(`${srcFolder}/blocks/`).forEach((block) => {
+    src(`src/blocks/${block}/img/*.{jpg,png,}`)
       .on('data', (file) => {
         del(`${srcFolder}/blocks/${block}/img/${file.basename}`);
       })
@@ -134,9 +133,9 @@ const img = (cb) => {
           method: 4, // Укажите метод сжатия, который будет использоваться между 0(самым быстрым) и 6(самым медленным).
         }),
       )
-      .pipe(dest(`${srcFolder}/blocks/${block}/img/`))
+      .pipe(dest(`${srcFolder}/blocks/${block}/img`))
 
-      .pipe(src('src/**/img/*.webp'))
+      .pipe(src(`${path.src.img}*.webp`))
       .pipe(flatten()) // удалить относительный путь к картинке
       .pipe(dest(path.build.img));
   });
