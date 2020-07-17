@@ -269,7 +269,10 @@ const build = series(
     html,
     css,
     js,
-    img,
+    series(
+      img,
+      copyWebp,
+    ),
     series(
       otf,
       ttf,
