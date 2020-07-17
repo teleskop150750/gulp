@@ -298,9 +298,9 @@ exports.otf = otf;
 exports.ttf = ttf;
 exports.copyWoff2 = copyWoff2;
 
-exports.img = img;
+exports.img1 = img;
 exports.img2 = copyWebp;
-exports.img3 = series(img, copyWebp);
+exports.img = series(img, copyWebp);
 
 exports.fonts = series(
   otf,
