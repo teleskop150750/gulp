@@ -248,9 +248,7 @@ const watchFiles = () => {
   watch(path.watch.html, html);
   watch(path.watch.css, css);
   watch(path.watch.js, js);
-  watch(path.watch.img, series(
-    img,
-  ));
+  watch(path.watch.img, img);
   watch(path.watch.fonts, series(
     otf, ttf, copyWoff2,
   ));
@@ -263,9 +261,7 @@ const build = series(
     html,
     css,
     js,
-    series(
-      img,
-    ),
+    img,
     series(
       otf,
       ttf,
@@ -293,9 +289,7 @@ exports.html = html;
 exports.css = css;
 exports.js = js;
 
-exports.img = series(
-  img,
-);
+exports.img = img;
 
 exports.fonts = series(
   otf,
