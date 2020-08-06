@@ -30,7 +30,7 @@ const flatten = require('gulp-flatten'); // работа с путями к фа
 const browserSync = require('browser-sync'); // браузер
 
 const {
-  src, dest, parallel, series, watch,
+  src, dest, parallel, lastRun, series, watch,
 } = gulp;
 
 // папка проекта
@@ -63,7 +63,7 @@ const path = {
     html: `${srcFolder}/index.html`,
     css: `${srcFolder}/css/index.css`,
     js: `${srcFolder}/js/index.js`,
-    img: [`${srcFolder}/**/img/*{jpg,png,svg,gif,ico,webp}`, `!${srcFolder}/favicon`],
+    img: [`${srcFolder}/**/img/*.{jpg,png,svg,gif,ico,webp}`, `!${srcFolder}/favicon`],
     fonts: `${srcFolder}/fonts/`,
   },
   // отслеживание
@@ -123,25 +123,15 @@ const js = () => src(path.src.js)
 // img
 
 const img = () => src(path.src.img)
+  .pipe(flatten()) // удалить относительный путь к картинке
+  .pipe(dest(path.build.img))
+
   .pipe(webp(
     webp({
       quality: 75, // коэффициент качества между 0 и 100
       method: 4, // метод сжатия, который будет использоваться между 0(самым быстрым) и 6(самым медленным).
     }),
   ))
-  .pipe(flatten()) // удалить относительный путь к картинке
-  .pipe(dest(path.build.img))
-
-  .pipe(src(path.src.img))
-  .pipe(imagemin([
-    imagemin.mozjpeg({ quality: 75 }),
-    imagemin.optipng({ optimizationLevel: 5 }),
-    imagemin.svgo({
-      plugins: [
-        { removeViewBox: false }],
-    }),
-  ]))
-  .pipe(flatten()) // удалить относительный путь к картинке
   .pipe(dest(path.build.img))
 
   .pipe(src(`${srcFolder}/favicon/*`))
@@ -202,7 +192,7 @@ const fontsStyle = (cb) => {
   cb();
 };
 
-// min HTML CSS JS
+// min HTML CSS JS IMG
 
 const minHTML = () => src([`${path.build.html}*.html`]) // сжимаем css
   .pipe(
@@ -222,10 +212,24 @@ const minJS = () => src([`${path.build.js}*.js`, `${path.build.js}*.es5.js`])
   .pipe(terser())
   .pipe(dest(path.minBuild.js));
 
-const copy = () => src([`${distFolder}/fonts/**/*`, `${distFolder}/img/**/*`], {
+const minIMG = () => src(`${path.build.img}*.{jpg,png,svg,gif}`)
+  .pipe(imagemin([
+    imagemin.mozjpeg({ quality: 75 }),
+    imagemin.optipng({ optimizationLevel: 5 }),
+    imagemin.svgo({
+      plugins: [
+        { removeViewBox: false }],
+    }),
+  ]))
+  .pipe(dest(path.minBuild.img));
+
+const copy = () => src([`${distFolder}/fonts/**/*`, `${path.build.img}*.webp`], {
   base: distFolder,
 })
   .pipe(dest(minFolder));
+
+const copyOther = () => src(`${srcFolder}/favicon/*.{ico,webmanifest}`)
+  .pipe(dest(path.minBuild.img));
 
 // clean dist
 
@@ -294,11 +298,11 @@ exports.html = html;
 exports.css = css;
 exports.js = js;
 
+exports.img = img;
+
 exports.otf = otf;
 exports.ttf = ttf;
 exports.copyWoff2 = copyWoff2;
-
-exports.img = img;
 
 exports.fonts = series(
   otf,
@@ -316,6 +320,8 @@ exports.min = series(
     minHTML,
     minCSS,
     minJS,
+    minIMG,
     copy,
+    copyOther,
   ),
 );
