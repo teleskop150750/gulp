@@ -19,10 +19,9 @@ const terser = require('gulp-terser'); // сжатие js
 // IMG
 const webp = require('gulp-webp'); // конвертация в webp
 const imagemin = require('gulp-imagemin'); // сжатие изображений
-// FONTS
-const ttf2woff = require('gulp-ttf2woff'); // ttf2woff
-const ttf2woff2 = require('gulp-ttf2woff2'); // ttf2woff2
+// FONTSttf2woff
 const fonter = require('gulp-fonter'); // otf2ttf
+const ttf2woff2 = require('gulp-ttf2woff2'); // ttf2woff2
 // работа с файлами
 const fs = require('fs'); // файловая система
 const del = require('del'); // удалить папки/файлы
@@ -151,10 +150,6 @@ const otf = () => src(`${path.src.fonts}*.otf`)
   )
   .pipe(dest(path.src.fonts));
 
-const ttf = () => src(`${path.src.fonts}*.ttf`)
-  .pipe(ttf2woff())
-  .pipe(dest(path.src.fonts));
-
 const ttf2 = () => src(`${path.src.fonts}*.ttf`)
   .on('data', (file) => {
     del(path.src.fonts + file.basename);
@@ -173,7 +168,7 @@ const fontsStyle = (cb) => {
   const fileContent = fs.readFileSync(`${srcFolder}/css/global/fonts.css`).toString(); // получаем содержимое файла
   // проверяем пустой ли файл
   if (fileContent === '') {
-    fs.writeFileSync(`${srcFolder}/css/global/fonts.css`, '/* Fonts */\r\n\r\n'); // записываем заглавный комментарий
+    fs.writeFileSync(`${srcFolder}/css/global/fonts.css`, '/* Fonts */\n\n'); // записываем заглавный комментарий
     let cFontName = ''; // копия названия файла (шрифта)
     // читаем содержимое папки
     fs.readdirSync(path.build.fonts).forEach((item) => {
@@ -183,12 +178,12 @@ const fontsStyle = (cb) => {
         fs.appendFileSync(
           `${srcFolder}/css/global/fonts.css`, // завписываем структуру подключения в файл
           `@font-face {
-	font-family: '${fontName}';
-	font-display: swap;
-	src: url('../fonts/${fontName}.woff2') format('woff2');
-	font-style: normal;
-	font-weight: 400;
-}\r\n\r\n`,
+  font-family: '${fontName}';
+  font-display: swap;
+  src: url('../fonts/${fontName}.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+}\n\n`,
         );
       }
       cFontName = fontName;
@@ -265,7 +260,6 @@ const watchFiles = () => {
   watch(path.watch.img, img);
   watch(path.watch.fonts, series(
     otf,
-    ttf,
     ttf2,
     copyWoff,
   ));
@@ -281,7 +275,6 @@ const build = series(
     img,
     series(
       otf,
-      ttf,
       ttf2,
       copyWoff,
       fontsStyle,
@@ -310,12 +303,11 @@ exports.js = js;
 exports.img = img;
 
 exports.otf = otf;
-exports.ttf = ttf;
+exports.ttf2 = ttf2;
 exports.copyWoff = copyWoff;
 
 exports.fonts = series(
   otf,
-  ttf,
   ttf2,
   copyWoff,
   fontsStyle,
