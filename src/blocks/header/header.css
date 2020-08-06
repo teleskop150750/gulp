@@ -1,5 +1,13 @@
 /* header */
 
 .header {
-  padding: 30px 64px;
+  padding: 16px 24px;
+
+  @media (width >= 768px) {
+    padding: 30px 64px;
+  }
+
+  &__title {
+    margin: 0;
+  }
 }

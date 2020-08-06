@@ -1,5 +1,9 @@
 /* main */
 
 .main {
-  padding: 100px 64px;
+  padding: 20px 16px;
+
+  @media (width >= 768px) {
+    padding: 100px 64px;
+  }
 }

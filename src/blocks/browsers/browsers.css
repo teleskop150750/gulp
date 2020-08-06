@@ -1,12 +1,20 @@
 /* browsers */
 
 .browsers {
+  &__title {
+    margin-top: 0;
+  }
+
   &__list {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
     padding: 0;
     margin: 0;
     list-style: none;
+
+    @media (width >= 768px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
   }
 
   &__list-item {
@@ -14,6 +22,10 @@
     margin-top: 1px;
     margin-left: 1px;
     box-shadow: 0 0 0 1px var(--color-grey-lighter);
+
+    &:nth-child(3) {
+      grid-column: -1 / 1;
+    }
   }
 
   &__list-figure {
