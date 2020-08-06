@@ -18,6 +18,7 @@ const babel = require('gulp-babel'); // babel
 const terser = require('gulp-terser'); // сжатие js
 // IMG
 const webp = require('gulp-webp'); // конвертация в webp
+const imagemin = require('gulp-imagemin'); // сжатие изображений
 // FONTS
 const ttf2woff2 = require('gulp-ttf2woff2'); // ttf2woff2
 const fonter = require('gulp-fonter'); // otf2ttf
@@ -25,7 +26,6 @@ const fonter = require('gulp-fonter'); // otf2ttf
 const fs = require('fs'); // файловая система
 const del = require('del'); // удалить папки/файлы
 const rename = require('gulp-rename'); // переименовать файл
-const flatten = require('gulp-flatten'); // работа с путями к файлу
 const browserSync = require('browser-sync'); // браузер
 
 const {
@@ -62,7 +62,7 @@ const path = {
     html: `${srcFolder}/index.html`,
     css: `${srcFolder}/css/index.css`,
     js: `${srcFolder}/js/index.js`,
-    img: `${srcFolder}/**/img/`,
+    img: [`${srcFolder}/img/*{jpg,png,svg,gif,ico,webp}`, `!${srcFolder}/favicon`],
     fonts: `${srcFolder}/fonts/`,
   },
   // отслеживание
@@ -121,26 +121,27 @@ const js = () => src(path.src.js)
 
 // img
 
-const img = (cb) => {
-  fs.readdirSync(`${srcFolder}/blocks/`).forEach((block) => {
-    src(`src/blocks/${block}/img/*.{jpg,png,}`)
-      .on('data', (file) => {
-        del(`${srcFolder}/blocks/${block}/img/${file.basename}`);
-      })
-      .pipe(
-        webp({
-          quality: 75, // Установите коэффициент качества между 0 и 100
-          method: 4, // Укажите метод сжатия, который будет использоваться между 0(самым быстрым) и 6(самым медленным).
-        }),
-      )
-      .pipe(dest(`${srcFolder}/blocks/${block}/img`))
+const img = () => src(path.src.img)
+  .pipe(webp(
+    webp({
+      quality: 75, // коэффициент качества между 0 и 100
+      method: 4, // метод сжатия, который будет использоваться между 0(самым быстрым) и 6(самым медленным).
+    }),
+  ))
+  .pipe(dest(path.build.img))
 
-      .pipe(src(`${path.src.img}*.webp`))
-      .pipe(flatten()) // удалить относительный путь к картинке
-      .pipe(dest(path.build.img));
-  });
-  cb();
-};
+  .pipe(src(path.src.img))
+  .pipe(imagemin([
+    imagemin.mozjpeg({ quality: 75 }),
+    imagemin.optipng({ optimizationLevel: 5 }),
+    imagemin.svgo({
+      plugins: [
+        { removeViewBox: false }],
+    }),
+  ]))
+  .pipe(dest(path.build.img))
+  .pipe(src(`${srcFolder}/favicon/*`))
+  .pipe(dest(path.build.img));
 
 // fonts
 
