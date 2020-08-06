@@ -20,6 +20,7 @@ const terser = require('gulp-terser'); // сжатие js
 const webp = require('gulp-webp'); // конвертация в webp
 const imagemin = require('gulp-imagemin'); // сжатие изображений
 // FONTS
+const ttf2woff = require('gulp-ttf2woff'); // ttf2woff
 const ttf2woff2 = require('gulp-ttf2woff2'); // ttf2woff2
 const fonter = require('gulp-fonter'); // otf2ttf
 // работа с файлами
@@ -151,13 +152,17 @@ const otf = () => src(`${path.src.fonts}*.otf`)
   .pipe(dest(path.src.fonts));
 
 const ttf = () => src(`${path.src.fonts}*.ttf`)
+  .pipe(ttf2woff())
+  .pipe(dest(path.src.fonts));
+
+const ttf2 = () => src(`${path.src.fonts}*.ttf`)
   .on('data', (file) => {
     del(path.src.fonts + file.basename);
   })
   .pipe(ttf2woff2())
   .pipe(dest(path.src.fonts));
 
-const copyWoff2 = () => src(`${path.src.fonts}*.woff2`)
+const copyWoff = () => src(`${path.src.fonts}*.{woff,woff2}`)
   .pipe(dest(path.build.fonts));
 
 // запись шрифтов в fonts.css
@@ -259,7 +264,10 @@ const watchFiles = () => {
   watch(path.watch.js, js);
   watch(path.watch.img, img);
   watch(path.watch.fonts, series(
-    otf, ttf, copyWoff2,
+    otf,
+    ttf,
+    ttf2,
+    copyWoff,
   ));
 };
 
@@ -274,7 +282,8 @@ const build = series(
     series(
       otf,
       ttf,
-      copyWoff2,
+      ttf2,
+      copyWoff,
       fontsStyle,
     ),
   ),
@@ -302,12 +311,13 @@ exports.img = img;
 
 exports.otf = otf;
 exports.ttf = ttf;
-exports.copyWoff2 = copyWoff2;
+exports.copyWoff = copyWoff;
 
 exports.fonts = series(
   otf,
   ttf,
-  copyWoff2,
+  ttf2,
+  copyWoff,
   fontsStyle,
 );
 
