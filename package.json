@@ -36,6 +36,7 @@
     "gulp-terser": "^1.3.2",
     "gulp-ttf2woff2": "^3.0.0",
     "gulp-webp": "^4.0.1",
+    "gulp-webp-html": "^1.0.2",
     "postcss-import": "^12.0.1",
     "postcss-media-minmax": "^4.0.0",
     "postcss-nested": "^4.2.3",

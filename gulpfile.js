@@ -2,6 +2,7 @@
 const gulp = require('gulp'); // gulp
 // HTML
 const htmlInclude = require('gulp-html-tag-include'); // объединение html
+const webpHtml = require('gulp-webp-html'); // объединение html
 const htmlmin = require('gulp-htmlmin'); // min html
 // CSS
 const postcss = require('gulp-postcss'); // postcss
@@ -80,6 +81,7 @@ const path = {
 
 const html = () => src(path.src.html)
   .pipe(htmlInclude()) // собироваем в один файл
+  .pipe(webpHtml())
   .pipe(dest(path.build.html))
   .pipe(browserSync.stream());
 
