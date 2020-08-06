@@ -26,6 +26,7 @@ const fonter = require('gulp-fonter'); // otf2ttf
 const fs = require('fs'); // файловая система
 const del = require('del'); // удалить папки/файлы
 const rename = require('gulp-rename'); // переименовать файл
+const flatten = require('gulp-flatten'); // работа с путями к файлу
 const browserSync = require('browser-sync'); // браузер
 
 const {
@@ -62,7 +63,7 @@ const path = {
     html: `${srcFolder}/index.html`,
     css: `${srcFolder}/css/index.css`,
     js: `${srcFolder}/js/index.js`,
-    img: [`${srcFolder}/img/*{jpg,png,svg,gif,ico,webp}`, `!${srcFolder}/favicon`],
+    img: [`${srcFolder}/**/img/*{jpg,png,svg,gif,ico,webp}`, `!${srcFolder}/favicon`],
     fonts: `${srcFolder}/fonts/`,
   },
   // отслеживание
@@ -128,6 +129,7 @@ const img = () => src(path.src.img)
       method: 4, // метод сжатия, который будет использоваться между 0(самым быстрым) и 6(самым медленным).
     }),
   ))
+  .pipe(flatten()) // удалить относительный путь к картинке
   .pipe(dest(path.build.img))
 
   .pipe(src(path.src.img))
@@ -139,7 +141,9 @@ const img = () => src(path.src.img)
         { removeViewBox: false }],
     }),
   ]))
+  .pipe(flatten()) // удалить относительный путь к картинке
   .pipe(dest(path.build.img))
+
   .pipe(src(`${srcFolder}/favicon/*`))
   .pipe(dest(path.build.img));
 
