@@ -28,6 +28,9 @@ const fs = require('fs'); // файловая система
 const del = require('del'); // удалить папки/файлы
 const rename = require('gulp-rename'); // переименовать файл
 const flatten = require('gulp-flatten'); // работа с путями к файлу
+const debug = require('gulp-debug'); // работа с путями к файлу
+const newer = require('gulp-newer'); // работа с путями к файлу
+const changed = require('gulp-changed'); // работа с путями к файлу
 const browserSync = require('browser-sync'); // браузер
 
 const {
@@ -125,6 +128,9 @@ const js = () => src(path.src.js)
 // img
 
 const img = () => src(path.src.img)
+  .pipe(newer(path.build.img))
+  .pipe(changed(path.build.img))
+  .pipe(debug({ title: 'src:' }))
   .pipe(flatten()) // удалить относительный путь к картинке
   .pipe(dest(path.build.img))
 
