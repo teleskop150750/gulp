@@ -126,8 +126,26 @@ const js = () => src(path.src.js)
   .pipe(browserSync.stream());
 
 // img
-
-const img = () => src(path.src.img)
+const img = (cb) => {
+  fs.readdirSync(`${srcFolder}/blocks/`).forEach((block) => {
+    src(`${srcFolder}/blocks/${block}/img/*.{jpg,png,}`)
+      .on('data', (file) => {
+        del(`${srcFolder}/blocks/${block}/img/${file.basename}`);
+      })
+      .pipe(newer(path.build.img))
+      .pipe(changed(path.build.img))
+      .pipe(debug({ title: 'src:' }))
+      .pipe(
+        webp({
+          quality: 75, // Установите коэффициент качества между 0 и 100
+          method: 4, // Укажите метод сжатия, который будет использоваться между 0(самым быстрым) и 6(самым медленным).
+        }),
+      )
+      .pipe(dest(`${srcFolder}/blocks/${block}/img/`));
+  });
+  cb();
+};
+const img3 = () => src(path.src.img)
   .pipe(newer(path.build.img))
   .pipe(changed(path.build.img))
   .pipe(debug({ title: 'src:' }))
