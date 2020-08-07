@@ -130,18 +130,21 @@ const img = (cb) => {
   fs.readdirSync(`${srcFolder}/blocks/`).forEach((block) => {
     src(`${srcFolder}/blocks/${block}/img/*.{jpg,png,}`)
       .on('data', (file) => {
-        del(`${srcFolder}/blocks/${block}/img/${file.basename}`);
+        // del(`${srcFolder}/blocks/${block}/img/${file.basename}`);
       })
       .pipe(newer(path.build.img))
       .pipe(changed(path.build.img))
       .pipe(debug({ title: 'src:' }))
-      .pipe(
+      .pipe(flatten()) // удалить относительный путь к картинке
+      .pipe(dest(path.build.img))
+
+      .pipe(webp(
         webp({
-          quality: 75, // Установите коэффициент качества между 0 и 100
-          method: 4, // Укажите метод сжатия, который будет использоваться между 0(самым быстрым) и 6(самым медленным).
+          quality: 75, // коэффициент качества между 0 и 100
+          method: 4, // метод сжатия, который будет использоваться между 0(самым быстрым) и 6(самым медленным).
         }),
-      )
-      .pipe(dest(`${srcFolder}/blocks/${block}/img/`));
+      ))
+      .pipe(dest(path.build.img));
   });
   cb();
 };
