@@ -126,45 +126,41 @@ const js = () => src(path.src.js)
   .pipe(browserSync.stream());
 
 // img
-const img = (cb) => {
-  fs.readdirSync(`${srcFolder}/blocks/`).forEach((block) => {
-    src(`${srcFolder}/blocks/${block}/img/*.{jpg,png,}`)
-      .on('data', (file) => {
-        // del(`${srcFolder}/blocks/${block}/img/${file.basename}`);
-      })
-      .pipe(newer(path.build.img))
-      .pipe(changed(path.build.img))
-      .pipe(debug({ title: 'src:' }))
-      .pipe(flatten()) // удалить относительный путь к картинке
-      .pipe(dest(path.build.img))
+const img = () => {
+  const srchArr = [];
+  fs.readdirSync(`${srcFolder}/blocks/`)
+    .forEach((block) => {
+      const pathImg = `${srcFolder}/blocks/${block}/img/*.{jpg,png,}`;
+      srchArr.push(pathImg);
+    });
+  console.log(srchArr);
+  return src(srchArr)
+    .pipe(changed(path.build.img, { extension: '.webp' }))
+    .pipe(debug({ title: '0:' }))
+    .pipe(webp(
+      webp({
+        quality: 75, // коэффициент качества между 0 и 100
+        method: 4, // метод сжатия, который будет использоваться между 0(самым быстрым) и 6(самым медленным).
+      }),
+    ))
+    .pipe(dest(path.build.img))
 
-      .pipe(webp(
-        webp({
-          quality: 75, // коэффициент качества между 0 и 100
-          method: 4, // метод сжатия, который будет использоваться между 0(самым быстрым) и 6(самым медленным).
-        }),
-      ))
-      .pipe(dest(path.build.img));
-  });
-  cb();
+    .pipe(src(srchArr))
+    .pipe(changed(path.build.img))
+    .pipe(debug({ title: '1:' }))
+    .pipe(imagemin([
+      imagemin.gifsicle({ interlaced: true }),
+      imagemin.mozjpeg({ quality: 75, progressive: true }),
+      imagemin.optipng({ optimizationLevel: 5 }),
+      imagemin.svgo({
+        plugins: [
+          { removeViewBox: true },
+          { cleanupIDs: false },
+        ],
+      }),
+    ]))
+    .pipe(dest(path.build.img));
 };
-const img3 = () => src(path.src.img)
-  .pipe(newer(path.build.img))
-  .pipe(changed(path.build.img))
-  .pipe(debug({ title: 'src:' }))
-  .pipe(flatten()) // удалить относительный путь к картинке
-  .pipe(dest(path.build.img))
-
-  .pipe(webp(
-    webp({
-      quality: 75, // коэффициент качества между 0 и 100
-      method: 4, // метод сжатия, который будет использоваться между 0(самым быстрым) и 6(самым медленным).
-    }),
-  ))
-  .pipe(dest(path.build.img))
-
-  .pipe(src(`${srcFolder}/favicon/*`))
-  .pipe(dest(path.build.img));
 
 // fonts
 
