@@ -1,0 +1,13 @@
+/* body */
+
+.page__body {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  grid-template-columns: 300px 1fr;
+  min-height: 100vh;
+  margin: 0;
+  color: var(--color-grey-darker);
+  background-image: url('img/nas.jpg');
+  background-position: center;
+  background-size: cover;
+}

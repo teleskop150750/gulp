@@ -2,8 +2,10 @@
 
 .main {
   padding: 20px 16px;
+  background: #ffffffd5;
+  backdrop-filter: blur(20px);
 
   @media (width >= 768px) {
-    padding: 100px 64px;
+    padding: 36px 64px;
   }
 }

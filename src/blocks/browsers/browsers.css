@@ -3,28 +3,22 @@
 .browsers {
   &__title {
     margin-top: 0;
+    margin-bottom: 56px;
+    font-size: 36px;
   }
 
   &__list {
     display: grid;
     grid-template-columns: 1fr;
+    gap: 30px;
     padding: 0;
     margin: 0;
     list-style: none;
 
-    @media (width >= 768px) {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  &__list-item {
-    padding: 20px;
-    margin-top: 1px;
-    margin-left: 1px;
-    box-shadow: 0 0 0 1px var(--color-grey-lighter);
-
-    &:nth-child(3) {
-      grid-column: -1 / 1;
+    @media (width >= 0) {
+      grid-template-columns: repeat(auto-fit, 140px);
+      grid-auto-rows: 190px;
+      gap: 50px;
     }
   }
 
@@ -44,7 +38,7 @@
   }
 
   &__list-figcaption {
-    font-size: 20px;
+    font-size: 16px;
     text-align: center;
   }
 }

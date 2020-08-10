@@ -1,0 +1,18 @@
+/* asid */
+
+.asid {
+  padding: 16px;
+  background: #ffffff8e;
+  backdrop-filter: blur(20px);
+
+
+  @media (width >= 768px) {
+    padding: 30px 24px;
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 200;
+  }
+}

@@ -27,9 +27,7 @@ const ttf2woff2 = require('gulp-ttf2woff2'); // ttf2woff2
 const fs = require('fs'); // файловая система
 const del = require('del'); // удалить папки/файлы
 const rename = require('gulp-rename'); // переименовать файл
-const flatten = require('gulp-flatten'); // работа с путями к файлу
 const debug = require('gulp-debug'); // работа с путями к файлу
-const newer = require('gulp-newer'); // работа с путями к файлу
 const changed = require('gulp-changed'); // работа с путями к файлу
 const browserSync = require('browser-sync'); // браузер
 
@@ -84,7 +82,7 @@ const path = {
 
 const html = () => src(path.src.html)
   .pipe(htmlInclude()) // собироваем в один файл
-  .pipe(webpHtml())
+  // .pipe(webpHtml())
   .pipe(dest(path.build.html))
   .pipe(browserSync.stream());
 

@@ -7,7 +7,8 @@
 
 /* Blocks */
 
-@import '../blocks/header/header.css';
+@import '../blocks/body/body.css';
+@import '../blocks/asid/asid.css';
 @import '../blocks/main/main.css';
 @import '../blocks/browsers/browsers.css';
 @import '../blocks/footer/footer.css';
