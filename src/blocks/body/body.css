@@ -1,0 +1,20 @@
+/* body */
+
+.page__body {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  grid-template-columns: 300px 1fr;
+  height: 100vh;
+  margin: 0;
+  color: var(--color-grey-darker);
+  background-position: center;
+  background-size: cover;
+}
+
+.webp .page__body {
+  background-image: url('img/fon.jpg');
+}
+
+.no-webp .page__body {
+  background-image: url('img/fon.jpg');
+}

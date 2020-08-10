@@ -1,14 +1,19 @@
 /* footer */
 
 .footer {
-  padding: 20px 16px 30px;
+  grid-column: -1 / 1;
+  padding: 16px;
+
+  --color-grey-dark: #fdfdfd23;
   background-color: var(--color-grey-dark);
+  backdrop-filter: blur(10px);
 
   @media (width >= 768px) {
-    padding: 20px 64px 30px;
+    padding: 20px 64px;
   }
 
   &__copy {
+    margin: 0;
     color: var(--color-grey-lighter);
   }
 

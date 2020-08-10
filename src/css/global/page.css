@@ -6,7 +6,3 @@
   color: var(--basic-black);
   background-color: var(--basic-white);
 }
-
-.page__body {
-  margin: 0;
-}

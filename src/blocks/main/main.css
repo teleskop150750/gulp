@@ -1,9 +1,16 @@
 /* main */
 
 .main {
-  padding: 20px 16px;
+  overflow: hidden;
+  overflow-y: scroll;
+  background: #ffffffd5;
+  backdrop-filter: blur(20px);
 
-  @media (width >= 768px) {
-    padding: 100px 64px;
+  &__inner {
+    padding: 20px 16px;
+
+    @media (width >= 768px) {
+      padding: 36px 64px 50px;
+    }
   }
 }
