@@ -82,7 +82,7 @@ const path = {
 
 const html = () => src(path.src.html)
   .pipe(htmlInclude()) // собироваем в один файл
-  .pipe(webpHtml())
+  // .pipe(webpHtml())
   .pipe(dest(path.build.html))
   .pipe(browserSync.stream());
 
