@@ -1,10 +1,13 @@
 /* main */
 
 .main {
-  overflow: hidden;
-  overflow-y: scroll;
   background: #ffffffd5;
   backdrop-filter: blur(20px);
+
+  @media (width >= 768px){
+    overflow: hidden;
+    overflow-y: scroll;
+  }
 
   &__inner {
     padding: 20px 16px;
