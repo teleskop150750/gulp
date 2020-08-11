@@ -3,10 +3,10 @@
 .footer {
   grid-column: -1 / 1;
   padding: 16px;
+  backdrop-filter: blur(20px);
 
   --color-grey-dark: #fdfdfd23;
   background-color: var(--color-grey-dark);
-  backdrop-filter: blur(10px);
 
   @media (width >= 768px) {
     padding: 20px 64px;

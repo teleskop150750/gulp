@@ -1,6 +1,7 @@
 /* Page */
 
 .page {
+  min-height: 100%;
   font-family: 'Roboto', sans-serif;
   line-height: 1.5;
   color: var(--basic-black);
