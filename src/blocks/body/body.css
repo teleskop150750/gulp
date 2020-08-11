@@ -2,6 +2,7 @@
 
 .page__body {
   display: grid;
+<<<<<<< HEAD
 
   @media (width >= 0) and (width < 768px) {
     grid-template-columns: 1fr;
@@ -13,6 +14,11 @@
     grid-template-columns: 300px 1fr;
     height: 100vh;
   }
+=======
+  grid-template-rows: 1fr auto;
+  grid-template-columns: 300px 1fr;
+  height: 100vh;
+>>>>>>> 530b4b278e31732caf0381d1c5260795a9b25112
   margin: 0;
   color: var(--color-grey-darker);
   background-position: center;

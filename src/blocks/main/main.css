@@ -1,6 +1,7 @@
 /* main */
 
 .main {
+<<<<<<< HEAD
   background: #ffffffd5;
   backdrop-filter: blur(20px);
 
@@ -8,6 +9,12 @@
     overflow: hidden;
     overflow-y: scroll;
   }
+=======
+  overflow: hidden;
+  overflow-y: scroll;
+  background: #ffffffd5;
+  backdrop-filter: blur(20px);
+>>>>>>> 530b4b278e31732caf0381d1c5260795a9b25112
 
   &__inner {
     padding: 20px 16px;
