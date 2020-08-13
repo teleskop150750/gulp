@@ -289,21 +289,19 @@ const watchFiles = () => {
 };
 
 // cобрать проект
-const build = series(
-  clean,
-  parallel(
-    html,
-    css,
-    js,
-    img,
-    series(
-      otf,
-      ttf2,
-      copyWoff,
-      fontsStyle,
-    ),
+const build = parallel(
+  html,
+  css,
+  js,
+  img,
+  series(
+    otf,
+    ttf2,
+    copyWoff,
+    fontsStyle,
   ),
 );
+
 // запустить watcher и браузер
 const watchBrowser = parallel(
   watchFiles,
@@ -311,6 +309,7 @@ const watchBrowser = parallel(
 );
 
 exports.default = series(
+  clean,
   build,
   watchBrowser,
 );
