@@ -2,7 +2,9 @@
 
 .header {
   padding: 16px 0;
-  background: #ffffff8e;
+
+  --color-grey-light: #ffffff8e;
+  background: var(--color-grey-light);
 
   &::after {
     position: absolute;
@@ -83,15 +85,6 @@
         bottom: 0;
         left: 0;
         z-index: -1;
-        content: '';
-      }
-
-      &::before {
-        position: absolute;
-        bottom: 100%;
-        left: 0;
-        width: 100vw;
-        height: 72px;
         content: '';
         backdrop-filter: blur(20px);
       }

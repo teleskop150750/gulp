@@ -4,6 +4,7 @@ const gulp = require('gulp'); // gulp
 const htmlInclude = require('gulp-html-tag-include'); // объединение html
 const webpHtml = require('gulp-webp-html'); // объединение html
 const htmlmin = require('gulp-htmlmin'); // min html
+const beautify = require('gulp-jsbeautifier');
 // CSS
 const postcss = require('gulp-postcss'); // postcss
 const scss = require('postcss-nested'); // позволяет использовать вложенность scss
@@ -83,6 +84,7 @@ const path = {
 const html = () => src(path.src.html)
   .pipe(htmlInclude()) // собироваем в один файл
   .pipe(webpHtml())
+  .pipe(beautify())
   .pipe(dest(path.build.html))
   .pipe(browserSync.stream());
 
@@ -315,6 +317,7 @@ exports.default = series(
 );
 
 exports.build = build;
+exports.clean = clean;
 exports.watchFiles = watchFiles;
 exports.browser = browser;
 
