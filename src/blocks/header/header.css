@@ -6,7 +6,7 @@
   --color-grey-light: #ffffff8e;
   background: var(--color-grey-light);
 
-  &::after {
+  &::before {
     position: absolute;
     top: 0;
     right: 0;
@@ -72,21 +72,10 @@
       background: #ffffff8e;
       transition: transform 0.4s ease-in;
       transform: translateX(-100%);
-      backdrop-filter: blur(60px);
+      backdrop-filter: blur(20px);
 
       &--open {
         transform: translateX(0);
-      }
-
-      &::after {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        z-index: -1;
-        content: '';
-        backdrop-filter: blur(20px);
       }
     }
   }

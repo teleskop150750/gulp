@@ -12,7 +12,6 @@ const importcss = require('postcss-import'); // import css
 const media = require('postcss-media-minmax'); // @media (width >= 320px) в @media (min-width: 320px)
 const autoprefixer = require('autoprefixer'); // autoprefixer
 const mqpacker = require('css-mqpacker'); // группирует @media
-const prettier = require('gulp-prettier'); // prettier
 const cssnano = require('cssnano'); // сжатие css
 // JS
 const fileInclude = require('gulp-file-include'); // подключение файлов (работает для всех)
@@ -102,7 +101,7 @@ const css = () => src(path.src.css)
       autoprefixer(), // autoprefixer
     ]),
   )
-  .pipe(prettier()) // форматирование кода
+  .pipe(beautify())
   .pipe(dest(path.build.css))
   .pipe(browserSync.stream());
 
