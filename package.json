@@ -17,11 +17,12 @@
     "@babel/core": "^7.11.1",
     "@babel/preset-env": "^7.11.0",
     "autoprefixer": "^9.8.6",
+    "babel-eslint": "^10.1.0",
     "browser-sync": "^2.26.12",
     "css-mqpacker": "^7.0.0",
     "cssnano": "^4.1.10",
     "del": "^5.1.0",
-    "eslint": "^7.6.0",
+    "eslint": "^7.7.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.0",
     "gulp": "^4.0.2",
@@ -61,7 +62,38 @@
       "@babel/preset-env"
     ]
   },
-  "prettier":{
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "es2020": true
+    },
+    "extends": ["airbnb-base"],
+    "parserOptions": {
+      "ecmaVersion": 11,
+      "sourceType": "module"
+    },
+    "rules": {
+      "max-len": [
+        1,
+        {
+          "code": 80,
+          "ignoreComments": true,
+          "ignoreTrailingComments": true,
+          "ignoreUrls": true,
+          "ignoreStrings": true,
+          "ignoreTemplateLiterals": true,
+          "ignoreRegExpLiterals": true
+        }
+      ],
+      "no-plusplus": [
+        2,
+        {
+          "allowForLoopAfterthoughts": true
+        }
+      ]
+    }
+  },
+  "prettier": {
     "printWidth": 150,
     "useTabs": false,
     "tabWidth": 2,
