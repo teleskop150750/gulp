@@ -11,7 +11,7 @@ import importcss from 'postcss-import'; // собрать css
 import nested from 'postcss-nested'; // позволяет использовать вложенность scss
 import media from 'postcss-media-minmax'; // @media (width >= 320px) => @media (min-width: 320px)
 import mqpacker from 'css-mqpacker'; // сгруппировать @media
-import autoprefixer from 'autoprefixer'; // autoprefixer
+import autoprefixer from 'autoprefixer'; // вендорные префиксы
 import prettier from 'gulp-prettier'; // форматировать
 import cssnano from 'cssnano'; // сжать css
 // JS
@@ -66,7 +66,6 @@ const path = {
     html: `${srcFolder}/index.html`,
     css: `${srcFolder}/css/index.css`,
     js: `${srcFolder}/js/index.js`,
-    img: [`${srcFolder}/**/img/*.{jpg,png,svg,gif,ico,webp}`, `!${srcFolder}/favicon`],
     fonts: `${srcFolder}/fonts/`,
   },
   // отслеживание
@@ -74,7 +73,7 @@ const path = {
     html: `${srcFolder}/**/*.html`,
     css: `${srcFolder}/**/*.css`,
     js: `${srcFolder}/**/*.js`,
-    img: `${srcFolder}/**/img/*`,
+    img: [`${srcFolder}/**/img/*`, `${srcFolder}/favicon/*`],
     fonts: `${srcFolder}/fonts/*`,
   },
 };
@@ -99,7 +98,7 @@ export const css = () => src(path.src.css)
       mqpacker({
         sort: true,
       }),
-      autoprefixer(), // вендорные префиксы
+      autoprefixer(),
     ]),
   )
   .pipe(prettier())
@@ -113,11 +112,7 @@ export const js = () => src(path.src.js)
   .pipe(prettier())
   .pipe(dest(path.build.js))
 
-  .pipe(
-    babel({
-      presets: ['@babel/preset-env'],
-    }),
-  )
+  .pipe(babel())
   .pipe(
     rename({
       extname: '.es5.js',
@@ -128,7 +123,7 @@ export const js = () => src(path.src.js)
 
 // img
 export const img = () => {
-  const srchArr = [];
+  const srchArr = []; // массив путей к картинкам в папке blocks
   fs.readdirSync(`${srcFolder}/blocks/`).forEach((block) => {
     const pathImg = `${srcFolder}/blocks/${block}/img/*.{jpg,png,}`;
     srchArr.push(pathImg);
@@ -158,7 +153,7 @@ export const img = () => {
 
 export const otf = () => src(`${path.src.fonts}*.otf`)
   .on('data', (file) => {
-    del(path.src.fonts + file.basename);
+    del(path.src.fonts + file.basename); // заменить ots на ttf
   })
   .pipe(
     fonter({
@@ -167,9 +162,9 @@ export const otf = () => src(`${path.src.fonts}*.otf`)
   )
   .pipe(dest(path.src.fonts));
 
-export const ttf2 = () => src(`${path.src.fonts}*.ttf`)
+export const ttf = () => src(`${path.src.fonts}*.ttf`)
   .on('data', (file) => {
-    del(path.src.fonts + file.basename);
+    del(path.src.fonts + file.basename); // заменить ttf на woff2
   })
   .pipe(ttf2woff2())
   .pipe(dest(path.src.fonts));
@@ -181,18 +176,18 @@ export const copyWoff = () => src(`${path.src.fonts}*.{woff,woff2}`).pipe(dest(p
 // в конце требуется откорректировать названиие шрифтов и их начертание
 
 export const fontsStyle = (cb) => {
-  const fileContent = fs.readFileSync(`${srcFolder}/css/global/fonts.css`).toString(); // получаем содержимое файла
-  // проверяем пустой ли файл
+  const fileContent = fs.readFileSync(`${srcFolder}/css/global/fonts.css`).toString(); // получить содержимое файла
+  // проверить содержимое файла
   if (fileContent === '') {
-    fs.writeFileSync(`${srcFolder}/css/global/fonts.css`, '/* Fonts */\n\n'); // записываем заглавный комментарий
+    fs.writeFileSync(`${srcFolder}/css/global/fonts.css`, '/* Fonts */\n\n'); // добавить заглавный комментарий
     let cFontName = ''; // копия названия файла (шрифта)
-    // читаем содержимое папки
+    // прочитать содержимое папки
     fs.readdirSync(path.build.fonts).forEach((item) => {
-      const fontName = item.split('.')[0]; // получаем имя файла (шрифта)
-      // сравниваем с копияей, чтобы исключить повторы
+      const fontName = item.split('.')[0]; // получить имя файла (шрифта)
+      // сравнить с копией, чтобы исключить повторы
       if (cFontName !== fontName) {
         fs.appendFileSync(
-          `${srcFolder}/css/global/fonts.css`, // завписываем структуру подключения в файл
+          `${srcFolder}/css/global/fonts.css`, // записать структуру подключения в файл
           `@font-face {
   font-family: '${fontName}';
   font-display: swap;
@@ -208,9 +203,11 @@ export const fontsStyle = (cb) => {
   cb();
 };
 
+export const fonts = series(otf, ttf, copyWoff, fontsStyle);
+
 // min HTML CSS JS IMG
 
-export const minHTML = () => src([`${path.build.html}*.html`]) // сжимаем css
+export const minHTML = () => src([`${path.build.html}*.html`])
   .pipe(
     htmlmin({
       removeComments: true,
@@ -219,7 +216,7 @@ export const minHTML = () => src([`${path.build.html}*.html`]) // сжимаем
   )
   .pipe(dest(path.minBuild.html));
 
-export const minCSS = () => src([`${path.build.css}*.css`]) // сжимаем css
+export const minCSS = () => src([`${path.build.css}*.css`])
   .pipe(postcss([cssnano()]))
   .pipe(dest(path.minBuild.css));
 
@@ -242,7 +239,7 @@ export const minIMG = () => src(`${path.build.img}*.{jpg,png,svg,}`)
   )
   .pipe(dest(path.minBuild.img));
 
-export const copy = () => src([`${distFolder}/fonts/**/*`, `${path.build.img}*.webp`], {
+export const copyToMin = () => src([`${distFolder}/fonts/**/*`, `${path.build.img}*.webp`], {
   base: distFolder,
 }).pipe(dest(minFolder));
 
@@ -254,7 +251,7 @@ export const clean = () => del(distFolder);
 
 export const cleanMin = () => del(minFolder);
 
-// syns
+// sync
 
 export const browser = () => {
   browserSync.init({
@@ -273,35 +270,34 @@ export const watchFiles = () => {
   watch(path.watch.css, css);
   watch(path.watch.js, js);
   watch(path.watch.img, img);
-  watch(path.watch.fonts, series(otf, ttf2, copyWoff));
+  watch(path.watch.fonts, series(otf, ttf, copyWoff));
 };
 
-// cобрать проект
-export const build = parallel(html, css, js, img, series(otf, ttf2, copyWoff, fontsStyle));
-
-// запустить watcher и браузер
 export const watchBrowser = parallel(watchFiles, browser);
 
+// cобрать проект
+export const build = parallel(
+  html,
+  css,
+  js,
+  img,
+  series(
+    otf,
+    ttf,
+    copyWoff,
+    fontsStyle,
+  ),
+);
+
+export const min = series(
+  cleanMin,
+  parallel(
+    minHTML,
+    minCSS,
+    minJS,
+    minIMG,
+    copyToMin,
+  ),
+);
+
 export default series(clean, build, watchBrowser);
-
-// exports.build = build;
-// exports.clean = clean;
-// exports.watchFiles = watchFiles;
-// exports.browser = browser;
-
-// exports.html = html;
-// exports.css = css;
-// exports.js = js;
-
-// exports.img = img;
-
-// exports.otf = otf;
-// exports.ttf2 = ttf2;
-// exports.copyWoff = copyWoff;
-
-export const fonts = series(otf, ttf2, copyWoff, fontsStyle);
-
-// exports.clean = clean;
-// exports.cleanMin = cleanMin;
-
-export const min = series(cleanMin, parallel(minHTML, minCSS, minJS, minIMG, copy));
