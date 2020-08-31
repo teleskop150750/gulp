@@ -2,7 +2,7 @@
 
 (() => {
   const content = {
-    browsers: { 
+    browsers: {
       title: 'Браузеры',
       list: [
         {
