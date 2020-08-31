@@ -93,6 +93,13 @@
       ]
     }
   },
+  "stylelint": {
+    "extends": ["stylelint-config-standard", "stylelint-config-recess-order"],
+    "rules": {
+      "color-hex-length": "long",
+      "declaration-empty-line-before": "never"
+    }
+  },
   "prettier": {
     "printWidth": 150,
     "useTabs": false,
