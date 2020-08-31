@@ -93,6 +93,13 @@
       ]
     }
   },
+  "eslintIgnore": [
+    "/node_modules/",
+    "/dist/index.es5.js",
+    "/min/",
+    "/src/js/index.js",
+    "/src/js/libs/"
+  ],
   "stylelint": {
     "extends": ["stylelint-config-standard", "stylelint-config-recess-order"],
     "rules": {
