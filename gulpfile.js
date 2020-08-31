@@ -1,35 +1,35 @@
 // модули
 import gulp from 'gulp'; // gulp
 // HTML
-import htmlInclude from 'gulp-html-tag-include'; // объединение html
-import webpHtml from 'gulp-webp-html'; // объединение html
-import htmlmin from 'gulp-htmlmin'; // min html
-import beautify from 'gulp-jsbeautifier';
+import htmlInclude from 'gulp-html-tag-include'; // собрать html
+import webpHtml from 'gulp-webp-html'; // <img src="img.jpg"> => <picture><source srcset="img.webp" type="image/webp"><img src="img.jpg"></picture>
+import beautify from 'gulp-jsbeautifier'; // форматировать
+import htmlmin from 'gulp-htmlmin'; // сжать html
 // CSS
 import postcss from 'gulp-postcss'; // postcss
-import scss from 'postcss-nested'; // позволяет использовать вложенность scss
-import importcss from 'postcss-import'; // import css
-import media from 'postcss-media-minmax'; // @media (width >= 320px) в @media (min-width: 320px)
+import importcss from 'postcss-import'; // собрать css
+import nested from 'postcss-nested'; // позволяет использовать вложенность scss
+import media from 'postcss-media-minmax'; // @media (width >= 320px) => @media (min-width: 320px)
+import mqpacker from 'css-mqpacker'; // сгруппировать @media
 import autoprefixer from 'autoprefixer'; // autoprefixer
-import mqpacker from 'css-mqpacker'; // группирует @media
-import prettier from 'gulp-prettier'; // группирует @media
-import cssnano from 'cssnano'; // сжатие css
+import prettier from 'gulp-prettier'; // форматировать
+import cssnano from 'cssnano'; // сжать css
 // JS
-import fileInclude from 'gulp-file-include'; // подключение файлов (работает для всех)
+import fileInclude from 'gulp-file-include'; // собрать файлы
 import babel from 'gulp-babel'; // babel
-import terser from 'gulp-terser'; // сжатие js
+import terser from 'gulp-terser'; // сжать js
 // IMG
-import webp from 'gulp-webp'; // конвертация в webp
-import imagemin from 'gulp-imagemin'; // сжатие изображений
-// FONTSttf2woff
-import fonter from 'gulp-fonter'; // otf2ttf
-import ttf2woff2 from 'gulp-ttf2woff2'; // ttf2woff2
+import webp from 'gulp-webp'; // конвертировать в webp
+import imagemin from 'gulp-imagemin'; // сжать изображения
+// FONTS
+import fonter from 'gulp-fonter'; // otf => ttf
+import ttf2woff2 from 'gulp-ttf2woff2'; // ttf => woff2
 // работа с файлами
 import fs from 'fs'; // файловая система
 import del from 'del'; // удалить папки/файлы
 import rename from 'gulp-rename'; // переименовать файл
-import debug from 'gulp-debug'; // работа с путями к файлу
-import changed from 'gulp-changed'; // работа с путями к файлу
+import debug from 'gulp-debug'; // debug
+import changed from 'gulp-changed'; // пропустить только новые файлы
 import browserSync from 'browser-sync'; // браузер
 
 const {
@@ -53,7 +53,7 @@ const path = {
     img: `${distFolder}/img/`,
     fonts: `${distFolder}/fonts/`,
   },
-  // минифицированная версия
+  // сжатый проект
   minBuild: {
     html: `${minFolder}/`,
     css: `${minFolder}/`,
@@ -82,7 +82,7 @@ const path = {
 // HTML
 
 export const html = () => src(path.src.html)
-  .pipe(htmlInclude()) // собироваем в один файл
+  .pipe(htmlInclude())
   .pipe(webpHtml())
   .pipe(beautify())
   .pipe(dest(path.build.html))
@@ -93,13 +93,13 @@ export const html = () => src(path.src.html)
 export const css = () => src(path.src.css)
   .pipe(
     postcss([
-      importcss(), // собироваем в один файл
-      scss(), // scss в css
-      media(), // media  в старый формат
+      importcss(),
+      nested(),
+      media(),
       mqpacker({
         sort: true,
-      }), // группируем media
-      autoprefixer(), // autoprefixer
+      }),
+      autoprefixer(), // вендорные префиксы
     ]),
   )
   .pipe(prettier())
@@ -109,7 +109,7 @@ export const css = () => src(path.src.css)
 // JS
 
 export const js = () => src(path.src.js)
-  .pipe(fileInclude()) // собироваем в один файл
+  .pipe(fileInclude())
   .pipe(prettier())
   .pipe(dest(path.build.js))
 

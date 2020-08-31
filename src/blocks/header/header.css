@@ -17,9 +17,9 @@
     backdrop-filter: blur(20px);
   }
 
-  @media (width < 768px) {
+  @media (width >= 0) and (width < 768px) {
     position: relative;
-    z-index: 100;
+    z-index: 1;
     display: flex;
   }
 
@@ -39,8 +39,7 @@
   }
 
   &__burger {
-
-    @media (width < 768px) {
+    @media (width >= 0) and (width < 768px) {
       display: flex;
       flex-direction: column;
       justify-content: space-evenly;
@@ -63,8 +62,7 @@
   }
 
   &__nav {
-
-    @media (width < 768px) {
+    @media (width >= 0) and (width < 768px) {
       position: absolute;
       top: 72px;
       z-index: -1;
