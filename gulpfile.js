@@ -289,7 +289,7 @@ export const browser = () => {
 
 // watch
 
-const watchFiles = () => {
+export const watchFiles = () => {
   watch(path.watch.html, html);
   watch(path.watch.css, css);
   watch(path.watch.js, js);

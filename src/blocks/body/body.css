@@ -17,12 +17,25 @@
     grid-template-rows: min-content 1fr min-content;
     grid-template-columns: 1fr;
     min-height: 100vh;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #a8a8a8;
+    }
   }
 
   @media (width >= 768px) {
     grid-template-rows: 1fr auto;
     grid-template-columns: 300px 1fr;
     height: 100vh;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 }
 

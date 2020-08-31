@@ -6,21 +6,7 @@
 
   --color-grey-dark: #fdfdfd23;
   background-color: var(--color-grey-dark);
-
-  &::after {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: -1;
-    content: '';
-    backdrop-filter: blur(20px);
-  }
-
-  @media (width >= 768px) {
-    padding: 20px 64px;
-  }
+  backdrop-filter: blur(20px);
 
   &__copy {
     margin: 0;
@@ -29,5 +15,9 @@
 
   &__nickname {
     font-weight: 700;
+  }
+
+  @media (width >= 768px) {
+    padding: 20px 64px;
   }
 }

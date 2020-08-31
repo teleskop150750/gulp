@@ -6,4 +6,8 @@
   line-height: 1.5;
   color: var(--basic-black);
   background-color: var(--basic-white);
+
+  @media (width >= 768px) {
+    scrollbar-width: thin;
+  }
 }
