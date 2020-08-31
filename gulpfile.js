@@ -101,7 +101,7 @@ const css = () => src(path.src.css)
       autoprefixer(), // autoprefixer
     ]),
   )
-  .pipe(beautify()) 
+  .pipe(beautify())
   .pipe(dest(path.build.css))
   .pipe(browserSync.stream());
 
