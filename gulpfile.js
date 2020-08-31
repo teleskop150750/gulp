@@ -248,7 +248,7 @@ export const minJS = () => src([`${path.build.js}*.js`, `${path.build.js}*.es5.j
   .pipe(dest(path.minBuild.js));
 
 export const minIMG = () => src(`${path.build.img}*.{jpg,png,svg,}`)
-  .pipe(changed(path.build.img))
+  .pipe(changed(path.minBuild.img))
   .pipe(debug({ title: 'min:' }))
   .pipe(imagemin([
     imagemin.mozjpeg({ quality: 75, progressive: true }),
@@ -260,7 +260,7 @@ export const minIMG = () => src(`${path.build.img}*.{jpg,png,svg,}`)
       ],
     }),
   ]))
-  .pipe(dest('minIMG'));
+  .pipe(dest(path.minBuild.img));
 
 export const copy = () => src([`${distFolder}/fonts/**/*`, `${path.build.img}*.webp`], {
   base: distFolder,
@@ -342,12 +342,12 @@ export default series(
 // exports.ttf2 = ttf2;
 // exports.copyWoff = copyWoff;
 
-// exports.fonts = series(
-//   otf,
-//   ttf2,
-//   copyWoff,
-//   fontsStyle,
-// );
+export const fonts = series(
+  otf,
+  ttf2,
+  copyWoff,
+  fontsStyle,
+);
 
 // exports.clean = clean;
 // exports.cleanMin = cleanMin;
