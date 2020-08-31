@@ -129,21 +129,18 @@ export const js = () => src(path.src.js)
 // img
 export const img = () => {
   const srchArr = [];
-  fs.readdirSync(`${srcFolder}/blocks/`)
-    .forEach((block) => {
-      const pathImg = `${srcFolder}/blocks/${block}/img/*.{jpg,png,}`;
-      srchArr.push(pathImg);
-    });
+  fs.readdirSync(`${srcFolder}/blocks/`).forEach((block) => {
+    const pathImg = `${srcFolder}/blocks/${block}/img/*.{jpg,png,}`;
+    srchArr.push(pathImg);
+  });
 
   return src(srchArr)
     .pipe(changed(path.build.img, { extension: '.webp' }))
     .pipe(debug({ title: 'webp:' }))
-    .pipe(webp(
-      webp({
-        quality: 75, // коэффициент качества между 0 и 100
-        method: 4, // метод сжатия, который будет использоваться между 0(самым быстрым) и 6(самым медленным).
-      }),
-    ))
+    .pipe(webp({
+      quality: 75, // коэффициент качества между 0 и 100
+      method: 4, // метод сжатия, который будет использоваться между 0(самым быстрым) и 6(самым медленным).
+    }))
     .pipe(dest(path.build.img))
 
     .pipe(src(srchArr))
@@ -155,21 +152,6 @@ export const img = () => {
     .pipe(changed(path.build.img))
     .pipe(debug({ title: 'favicon:' }))
     .pipe(dest(path.build.img));
-  // .pipe(src(srchArr))
-  // .pipe(changed(path.build.img))
-  // .pipe(debug({ title: 'imagemin:' }))
-  // .pipe(imagemin([
-  //   imagemin.gifsicle({ interlaced: true }),
-  //   imagemin.mozjpeg({ quality: 75, progressive: true }),
-  //   imagemin.optipng({ optimizationLevel: 5 }),
-  //   imagemin.svgo({
-  //     plugins: [
-  //       { removeViewBox: true },
-  //       { cleanupIDs: false },
-  //     ],
-  //   }),
-  // ]))
-  // .pipe(dest(path.build.img));
 };
 
 // fonts
@@ -192,8 +174,7 @@ export const ttf2 = () => src(`${path.src.fonts}*.ttf`)
   .pipe(ttf2woff2())
   .pipe(dest(path.src.fonts));
 
-export const copyWoff = () => src(`${path.src.fonts}*.{woff,woff2}`)
-  .pipe(dest(path.build.fonts));
+export const copyWoff = () => src(`${path.src.fonts}*.{woff,woff2}`).pipe(dest(path.build.fonts));
 
 // запись шрифтов в fonts.css
 // файл должен быть изначально пустой
@@ -250,22 +231,20 @@ export const minJS = () => src([`${path.build.js}*.js`, `${path.build.js}*.es5.j
 export const minIMG = () => src(`${path.build.img}*.{jpg,png,svg,}`)
   .pipe(changed(path.minBuild.img))
   .pipe(debug({ title: 'min:' }))
-  .pipe(imagemin([
-    imagemin.mozjpeg({ quality: 75, progressive: true }),
-    imagemin.optipng({ optimizationLevel: 5 }),
-    imagemin.svgo({
-      plugins: [
-        { removeViewBox: false },
-        { cleanupIDs: false },
-      ],
-    }),
-  ]))
+  .pipe(
+    imagemin([
+      imagemin.mozjpeg({ quality: 75, progressive: true }),
+      imagemin.optipng({ optimizationLevel: 5 }),
+      imagemin.svgo({
+        plugins: [{ removeViewBox: false }, { cleanupIDs: false }],
+      }),
+    ]),
+  )
   .pipe(dest(path.minBuild.img));
 
 export const copy = () => src([`${distFolder}/fonts/**/*`, `${path.build.img}*.webp`], {
   base: distFolder,
-})
-  .pipe(dest(minFolder));
+}).pipe(dest(minFolder));
 
 // clean dist
 
@@ -294,38 +273,16 @@ export const watchFiles = () => {
   watch(path.watch.css, css);
   watch(path.watch.js, js);
   watch(path.watch.img, img);
-  watch(path.watch.fonts, series(
-    otf,
-    ttf2,
-    copyWoff,
-  ));
+  watch(path.watch.fonts, series(otf, ttf2, copyWoff));
 };
 
 // cобрать проект
-export const build = parallel(
-  html,
-  css,
-  js,
-  img,
-  series(
-    otf,
-    ttf2,
-    copyWoff,
-    fontsStyle,
-  ),
-);
+export const build = parallel(html, css, js, img, series(otf, ttf2, copyWoff, fontsStyle));
 
 // запустить watcher и браузер
-export const watchBrowser = parallel(
-  watchFiles,
-  browser,
-);
+export const watchBrowser = parallel(watchFiles, browser);
 
-export default series(
-  clean,
-  build,
-  watchBrowser,
-);
+export default series(clean, build, watchBrowser);
 
 // exports.build = build;
 // exports.clean = clean;
@@ -342,23 +299,9 @@ export default series(
 // exports.ttf2 = ttf2;
 // exports.copyWoff = copyWoff;
 
-export const fonts = series(
-  otf,
-  ttf2,
-  copyWoff,
-  fontsStyle,
-);
+export const fonts = series(otf, ttf2, copyWoff, fontsStyle);
 
 // exports.clean = clean;
 // exports.cleanMin = cleanMin;
 
-export const min = series(
-  cleanMin,
-  parallel(
-    minHTML,
-    minCSS,
-    minJS,
-    minIMG,
-    copy,
-  ),
-);
+export const min = series(cleanMin, parallel(minHTML, minCSS, minJS, minIMG, copy));
