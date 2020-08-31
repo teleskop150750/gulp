@@ -69,7 +69,6 @@
   const heading = document.querySelector('.section-list__title');
   const containerList = document.querySelector('.section-list__list');
   const links = document.querySelectorAll('.header__link');
-  const linkActiveHref = document.querySelector('.header__link--active').getAttribute('href');
 
   const template = ({ imgName, description }) => {
     const li = document.createElement('li');
@@ -133,8 +132,6 @@
   links.forEach((link) => {
     link.addEventListener('click', handler);
   });
-
-  // render(content[linkActiveHref]);
 })();
 
 (() => {
@@ -144,8 +141,7 @@
 
   const closeNav = (e) => {
     e.stopPropagation();
-    if (!(!!e.target.closest('.header__nav')
-      || e.target.classList.contains('header__nav'))) {
+    if (!(!!e.target.closest('.header__nav') || e.target.classList.contains('header__nav'))) {
       nav.classList.remove('header__nav--open');
       body.classList.remove('page__body--overflow');
     }

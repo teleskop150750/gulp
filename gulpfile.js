@@ -1,35 +1,36 @@
 // модули
-const gulp = require('gulp'); // gulp
+import gulp from 'gulp'; // gulp
 // HTML
-const htmlInclude = require('gulp-html-tag-include'); // объединение html
-const webpHtml = require('gulp-webp-html'); // объединение html
-const htmlmin = require('gulp-htmlmin'); // min html
-const beautify = require('gulp-jsbeautifier');
+import htmlInclude from 'gulp-html-tag-include'; // объединение html
+import webpHtml from 'gulp-webp-html'; // объединение html
+import htmlmin from 'gulp-htmlmin'; // min html
+import beautify from 'gulp-jsbeautifier';
 // CSS
-const postcss = require('gulp-postcss'); // postcss
-const scss = require('postcss-nested'); // позволяет использовать вложенность scss
-const importcss = require('postcss-import'); // import css
-const media = require('postcss-media-minmax'); // @media (width >= 320px) в @media (min-width: 320px)
-const autoprefixer = require('autoprefixer'); // autoprefixer
-const mqpacker = require('css-mqpacker'); // группирует @media
-const cssnano = require('cssnano'); // сжатие css
+import postcss from 'gulp-postcss'; // postcss
+import scss from 'postcss-nested'; // позволяет использовать вложенность scss
+import importcss from 'postcss-import'; // import css
+import media from 'postcss-media-minmax'; // @media (width >= 320px) в @media (min-width: 320px)
+import autoprefixer from 'autoprefixer'; // autoprefixer
+import mqpacker from 'css-mqpacker'; // группирует @media
+import prettier from 'gulp-prettier'; // группирует @media
+import cssnano from 'cssnano'; // сжатие css
 // JS
-const fileInclude = require('gulp-file-include'); // подключение файлов (работает для всех)
-const babel = require('gulp-babel'); // babel
-const terser = require('gulp-terser'); // сжатие js
+import fileInclude from 'gulp-file-include'; // подключение файлов (работает для всех)
+import babel from 'gulp-babel'; // babel
+import terser from 'gulp-terser'; // сжатие js
 // IMG
-const webp = require('gulp-webp'); // конвертация в webp
-const imagemin = require('gulp-imagemin'); // сжатие изображений
+import webp from 'gulp-webp'; // конвертация в webp
+import imagemin from 'gulp-imagemin'; // сжатие изображений
 // FONTSttf2woff
-const fonter = require('gulp-fonter'); // otf2ttf
-const ttf2woff2 = require('gulp-ttf2woff2'); // ttf2woff2
+import fonter from 'gulp-fonter'; // otf2ttf
+import ttf2woff2 from 'gulp-ttf2woff2'; // ttf2woff2
 // работа с файлами
-const fs = require('fs'); // файловая система
-const del = require('del'); // удалить папки/файлы
-const rename = require('gulp-rename'); // переименовать файл
-const debug = require('gulp-debug'); // работа с путями к файлу
-const changed = require('gulp-changed'); // работа с путями к файлу
-const browserSync = require('browser-sync'); // браузер
+import fs from 'fs'; // файловая система
+import del from 'del'; // удалить папки/файлы
+import rename from 'gulp-rename'; // переименовать файл
+import debug from 'gulp-debug'; // работа с путями к файлу
+import changed from 'gulp-changed'; // работа с путями к файлу
+import browserSync from 'browser-sync'; // браузер
 
 const {
   src, dest, parallel, series, watch,
@@ -80,7 +81,7 @@ const path = {
 
 // HTML
 
-const html = () => src(path.src.html)
+export const html = () => src(path.src.html)
   .pipe(htmlInclude()) // собироваем в один файл
   .pipe(webpHtml())
   .pipe(beautify())
@@ -89,7 +90,7 @@ const html = () => src(path.src.html)
 
 // CSS
 
-const css = () => src(path.src.css)
+export const css = () => src(path.src.css)
   .pipe(
     postcss([
       importcss(), // собироваем в один файл
@@ -101,21 +102,22 @@ const css = () => src(path.src.css)
       autoprefixer(), // autoprefixer
     ]),
   )
-  .pipe(beautify())
+  .pipe(prettier())
   .pipe(dest(path.build.css))
   .pipe(browserSync.stream());
 
 // JS
 
-const js = () => src(path.src.js)
+export const js = () => src(path.src.js)
   .pipe(fileInclude()) // собироваем в один файл
+  .pipe(prettier())
   .pipe(dest(path.build.js))
 
   .pipe(
     babel({
       presets: ['@babel/preset-env'],
     }),
-  ) // babel
+  )
   .pipe(
     rename({
       extname: '.es5.js',
@@ -125,17 +127,17 @@ const js = () => src(path.src.js)
   .pipe(browserSync.stream());
 
 // img
-const img = () => {
+export const img = () => {
   const srchArr = [];
   fs.readdirSync(`${srcFolder}/blocks/`)
     .forEach((block) => {
       const pathImg = `${srcFolder}/blocks/${block}/img/*.{jpg,png,}`;
       srchArr.push(pathImg);
     });
-  console.log(srchArr);
+
   return src(srchArr)
     .pipe(changed(path.build.img, { extension: '.webp' }))
-    .pipe(debug({ title: '0:' }))
+    .pipe(debug({ title: 'webp:' }))
     .pipe(webp(
       webp({
         quality: 75, // коэффициент качества между 0 и 100
@@ -146,24 +148,33 @@ const img = () => {
 
     .pipe(src(srchArr))
     .pipe(changed(path.build.img))
-    .pipe(debug({ title: '1:' }))
-    .pipe(imagemin([
-      imagemin.gifsicle({ interlaced: true }),
-      imagemin.mozjpeg({ quality: 75, progressive: true }),
-      imagemin.optipng({ optimizationLevel: 5 }),
-      imagemin.svgo({
-        plugins: [
-          { removeViewBox: true },
-          { cleanupIDs: false },
-        ],
-      }),
-    ]))
+    .pipe(debug({ title: 'copy:' }))
+    .pipe(dest(path.build.img))
+
+    .pipe(src(`${srcFolder}/favicon/*`))
+    .pipe(changed(path.build.img))
+    .pipe(debug({ title: 'favicon:' }))
     .pipe(dest(path.build.img));
+  // .pipe(src(srchArr))
+  // .pipe(changed(path.build.img))
+  // .pipe(debug({ title: 'imagemin:' }))
+  // .pipe(imagemin([
+  //   imagemin.gifsicle({ interlaced: true }),
+  //   imagemin.mozjpeg({ quality: 75, progressive: true }),
+  //   imagemin.optipng({ optimizationLevel: 5 }),
+  //   imagemin.svgo({
+  //     plugins: [
+  //       { removeViewBox: true },
+  //       { cleanupIDs: false },
+  //     ],
+  //   }),
+  // ]))
+  // .pipe(dest(path.build.img));
 };
 
 // fonts
 
-const otf = () => src(`${path.src.fonts}*.otf`)
+export const otf = () => src(`${path.src.fonts}*.otf`)
   .on('data', (file) => {
     del(path.src.fonts + file.basename);
   })
@@ -174,21 +185,21 @@ const otf = () => src(`${path.src.fonts}*.otf`)
   )
   .pipe(dest(path.src.fonts));
 
-const ttf2 = () => src(`${path.src.fonts}*.ttf`)
+export const ttf2 = () => src(`${path.src.fonts}*.ttf`)
   .on('data', (file) => {
     del(path.src.fonts + file.basename);
   })
   .pipe(ttf2woff2())
   .pipe(dest(path.src.fonts));
 
-const copyWoff = () => src(`${path.src.fonts}*.{woff,woff2}`)
+export const copyWoff = () => src(`${path.src.fonts}*.{woff,woff2}`)
   .pipe(dest(path.build.fonts));
 
 // запись шрифтов в fonts.css
 // файл должен быть изначально пустой
 // в конце требуется откорректировать названиие шрифтов и их начертание
 
-const fontsStyle = (cb) => {
+export const fontsStyle = (cb) => {
   const fileContent = fs.readFileSync(`${srcFolder}/css/global/fonts.css`).toString(); // получаем содержимое файла
   // проверяем пустой ли файл
   if (fileContent === '') {
@@ -218,7 +229,7 @@ const fontsStyle = (cb) => {
 
 // min HTML CSS JS IMG
 
-const minHTML = () => src([`${path.build.html}*.html`]) // сжимаем css
+export const minHTML = () => src([`${path.build.html}*.html`]) // сжимаем css
   .pipe(
     htmlmin({
       removeComments: true,
@@ -227,45 +238,46 @@ const minHTML = () => src([`${path.build.html}*.html`]) // сжимаем css
   )
   .pipe(dest(path.minBuild.html));
 
-const minCSS = () => src([`${path.build.css}*.css`]) // сжимаем css
+export const minCSS = () => src([`${path.build.css}*.css`]) // сжимаем css
   .pipe(postcss([cssnano()]))
   .pipe(dest(path.minBuild.css));
 
-const minJS = () => src([`${path.build.js}*.js`, `${path.build.js}*.es5.js`])
+export const minJS = () => src([`${path.build.js}*.js`, `${path.build.js}*.es5.js`])
   .pipe(src([`${path.build.js}*.js`]))
   .pipe(terser())
   .pipe(dest(path.minBuild.js));
 
-const minIMG = () => src(`${path.build.img}*.{jpg,png,svg,gif}`)
+export const minIMG = () => src(`${path.build.img}*.{jpg,png,svg,}`)
+  .pipe(changed(path.build.img))
+  .pipe(debug({ title: 'min:' }))
   .pipe(imagemin([
-    imagemin.mozjpeg({ quality: 75 }),
+    imagemin.mozjpeg({ quality: 75, progressive: true }),
     imagemin.optipng({ optimizationLevel: 5 }),
     imagemin.svgo({
       plugins: [
-        { removeViewBox: false }],
+        { removeViewBox: false },
+        { cleanupIDs: false },
+      ],
     }),
   ]))
-  .pipe(dest(path.minBuild.img));
+  .pipe(dest('minIMG'));
 
-const copy = () => src([`${distFolder}/fonts/**/*`, `${path.build.img}*.webp`], {
+export const copy = () => src([`${distFolder}/fonts/**/*`, `${path.build.img}*.webp`], {
   base: distFolder,
 })
   .pipe(dest(minFolder));
 
-const copyOther = () => src(`${srcFolder}/favicon/*.{ico,webmanifest}`)
-  .pipe(dest(path.minBuild.img));
-
 // clean dist
 
-const clean = () => del(distFolder);
+export const clean = () => del(distFolder);
 
 // clean min
 
-const cleanMin = () => del(minFolder);
+export const cleanMin = () => del(minFolder);
 
 // syns
 
-const browser = () => {
+export const browser = () => {
   browserSync.init({
     server: {
       baseDir: `./${distFolder}/`,
@@ -290,7 +302,7 @@ const watchFiles = () => {
 };
 
 // cобрать проект
-const build = parallel(
+export const build = parallel(
   html,
   css,
   js,
@@ -304,43 +316,43 @@ const build = parallel(
 );
 
 // запустить watcher и браузер
-const watchBrowser = parallel(
+export const watchBrowser = parallel(
   watchFiles,
   browser,
 );
 
-exports.default = series(
+export default series(
   clean,
   build,
   watchBrowser,
 );
 
-exports.build = build;
-exports.clean = clean;
-exports.watchFiles = watchFiles;
-exports.browser = browser;
+// exports.build = build;
+// exports.clean = clean;
+// exports.watchFiles = watchFiles;
+// exports.browser = browser;
 
-exports.html = html;
-exports.css = css;
-exports.js = js;
+// exports.html = html;
+// exports.css = css;
+// exports.js = js;
 
-exports.img = img;
+// exports.img = img;
 
-exports.otf = otf;
-exports.ttf2 = ttf2;
-exports.copyWoff = copyWoff;
+// exports.otf = otf;
+// exports.ttf2 = ttf2;
+// exports.copyWoff = copyWoff;
 
-exports.fonts = series(
-  otf,
-  ttf2,
-  copyWoff,
-  fontsStyle,
-);
+// exports.fonts = series(
+//   otf,
+//   ttf2,
+//   copyWoff,
+//   fontsStyle,
+// );
 
-exports.clean = clean;
-exports.cleanMin = cleanMin;
+// exports.clean = clean;
+// exports.cleanMin = cleanMin;
 
-exports.min = series(
+export const min = series(
   cleanMin,
   parallel(
     minHTML,
@@ -348,6 +360,5 @@ exports.min = series(
     minJS,
     minIMG,
     copy,
-    copyOther,
   ),
 );
