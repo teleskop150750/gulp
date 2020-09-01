@@ -1,13 +1,13 @@
 // header
 
-(() => {
+export default () => {
   const button = document.querySelector('.header__burger');
   const nav = document.querySelector('.header__nav');
   const body = document.querySelector('.page__body');
 
   const closeNav = (e) => {
     e.stopPropagation();
-    if (!(!!e.target.closest('.header__nav') || e.target.classList.contains('header__nav'))) {
+    if (!(e.target.classList.contains('header__nav') || !!e.target.closest('.header__nav'))) {
       nav.classList.remove('header__nav--open');
       body.classList.remove('page__body--overflow');
     }
@@ -25,4 +25,4 @@
   };
 
   button.addEventListener('click', openNav);
-})();
+};

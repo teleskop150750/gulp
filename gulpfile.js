@@ -1,5 +1,5 @@
-// модули
 import gulp from 'gulp'; // gulp
+import webpack from 'webpack-stream';
 // HTML
 import htmlInclude from 'gulp-html-tag-include'; // собрать html
 import webpHtml from 'gulp-webp-html'; // <img src="img.jpg"> => <picture><source srcset="img.webp" type="image/webp"><img src="img.jpg"></picture>
@@ -15,8 +15,6 @@ import autoprefixer from 'autoprefixer'; // вендорные префиксы
 import prettier from 'gulp-prettier'; // форматировать
 import cssnano from 'cssnano'; // сжать css
 // JS
-import fileInclude from 'gulp-file-include'; // собрать файлы
-import babel from 'gulp-babel'; // babel
 import terser from 'gulp-terser'; // сжать js
 // IMG
 import webp from 'gulp-webp'; // конвертировать в webp
@@ -27,7 +25,6 @@ import ttf2woff2 from 'gulp-ttf2woff2'; // ttf => woff2
 // работа с файлами
 import fs from 'fs'; // файловая система
 import del from 'del'; // удалить папки/файлы
-import rename from 'gulp-rename'; // переименовать файл
 import debug from 'gulp-debug'; // debug
 import changed from 'gulp-changed'; // пропустить только новые файлы
 import browserSync from 'browser-sync'; // браузер
@@ -107,17 +104,27 @@ export const css = () => src(path.src.css)
 
 // JS
 
-export const js = () => src(path.src.js)
-  .pipe(fileInclude())
-  .pipe(prettier())
-  .pipe(dest(path.build.js))
+const isDev = true;
 
-  .pipe(babel())
-  .pipe(
-    rename({
-      extname: '.es5.js',
-    }),
-  )
+const webConfig = {
+  output: {
+    filename: 'index.js',
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        loader: 'babel-loader',
+        exclude: '/node_modules/',
+      },
+    ],
+  },
+  mode: isDev ? 'development' : 'production',
+  devtool: isDev ? 'source-map' : 'none',
+};
+
+export const js = () => src(path.src.js)
+  .pipe(webpack(webConfig))
   .pipe(dest(path.build.js))
   .pipe(browserSync.stream());
 

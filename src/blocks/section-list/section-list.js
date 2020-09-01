@@ -1,6 +1,6 @@
 // section-list
 
-(() => {
+export default () => {
   const content = {
     browsers: {
       title: 'Браузеры',
@@ -132,4 +132,4 @@
   links.forEach((link) => {
     link.addEventListener('click', handler);
   });
-})();
+};

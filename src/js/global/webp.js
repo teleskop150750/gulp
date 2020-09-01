@@ -1,6 +1,6 @@
 // webp
 
-(() => {
+export default () => {
   const body = document.documentElement;
   body.classList.remove('no-webp');
   const webP = new Image();
@@ -15,4 +15,4 @@
   };
 
   webP.onload = webP.onerror;
-})();
+};
