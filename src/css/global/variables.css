@@ -1,19 +1,25 @@
 /* Variables */
 
 :root {
+  --color-white-55a: rgba(255, 255, 255, 0.55);
+  --color-white-84a: rgba(255, 255, 255, 0.835);
   --color-grey-lightest: #e9eaeb;
+  --color-grey-lightest-55a: rgba(233, 234, 235, 0.55);
   --color-grey-lighter: #b1b3b6;
   --color-grey-light: #828282;
   --color-grey-medium: #696969;
   --color-grey-dark: #273238;
+  --color-grey-dark-15a: rgba(233, 234, 235, 0.15);
   --color-grey-darker: #333333;
+  --color-black-8a: rgba(0, 0, 0, 0.075);
   --color-blue-lightest: #def3f6;
-  --color-blue-lightest-transparent: #def3f600;
+  --color-blue-lightest-0a: rgba(222, 243, 246, 0);
   --color-blue-light: #32adfd;
   --color-blue-medium: #377db3;
   --color-blue-darker: #0064a4;
   --color-green-light: #ddf2ea;
   --color-green-darker: #a3cfd1;
+  --color-green-darker-50a: rgba(163, 207, 209, 0.5);
   --color-teal: #33779d;
   --color-lightteal: #42abb4;
   --color-turquoise: #00abbd;

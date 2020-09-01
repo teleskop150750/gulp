@@ -2,9 +2,7 @@
 
 .header {
   padding: 16px 0;
-
-  --color-grey-light: #ffffff8e;
-  background: var(--color-grey-light);
+  background: var(--color-grey-lightest-55a);
 
   &::before {
     position: absolute;
@@ -67,7 +65,7 @@
       top: 72px;
       z-index: -1;
       height: calc(100vh - 72px);
-      background: #ffffff8e;
+      background: var(--color-white-55a);
       transition: transform 0.4s ease-in;
       transform: translateX(-100%);
       backdrop-filter: blur(20px);
@@ -93,7 +91,7 @@
     transition: all 0.2s ease-out;
 
     &:hover {
-      background-color: #00000013;
+      background-color: var(--color-black-8a);
     }
 
     &--active {

@@ -1,8 +1,7 @@
 /* main */
 
 .main {
-  --color-grey-lightest: #ffffffd5;
-  background: var(--color-grey-lightest);
+  background: var(--color-white-84a);
   backdrop-filter: blur(20px);
 
   @media (width >= 768px) {

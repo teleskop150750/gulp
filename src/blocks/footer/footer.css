@@ -3,9 +3,7 @@
 .footer {
   grid-column: -1 / 1;
   padding: 16px;
-
-  --color-grey-dark: #fdfdfd23;
-  background-color: var(--color-grey-dark);
+  background-color: var(--color-grey-dark-15a);
   backdrop-filter: blur(20px);
 
   &__copy {
