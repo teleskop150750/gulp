@@ -20,10 +20,12 @@
 
     &::-webkit-scrollbar {
       width: 8px;
+      background-color: var(--color-grey-lightest);
     }
 
     &::-webkit-scrollbar-thumb {
-      background-color: #a8a8a8;
+      --color-grey-lighter: #adaeb1;
+      background-color: var(--color-grey-lighter);
     }
   }
 

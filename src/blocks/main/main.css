@@ -11,19 +11,21 @@
 
     &::-webkit-scrollbar {
       width: 8px;
+      background-color: var(--color-grey-lightest);
     }
 
     &::-webkit-scrollbar-thumb {
+      --color-grey-lighter: #adaeb1;
       width: 5px;
       background-color: transparent;
-      border-right: 4px solid #a8a8a8;
+      border-right: 4px solid var(--color-grey-lighter);
       transition: all 0.3s ease;
     }
 
     &::-webkit-scrollbar-thumb:hover {
       width: 5px;
       background-color: transparent;
-      border-right: 8px solid #a8a8a8;
+      border-right-width: 8px;
     }
   }
 
