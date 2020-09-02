@@ -14,8 +14,8 @@ export default () => {
       nav.classList.remove('header__nav--open');
       body.classList.remove('page__body--overflow');
       padding.removePadding();
+      body.removeEventListener('click', closeNav);
     }
-    body.removeEventListener('click', closeNav);
   };
 
   const toggleNav = (e) => {
