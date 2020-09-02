@@ -10,7 +10,7 @@ export default () => {
 
   const closeNav = (e) => {
     e.stopPropagation();
-    if (!(e.target.classList.contains('header__nav') || !!e.target.closest('.header__nav'))) {
+    if (!e.target.classList.contains('header__nav')) {
       nav.classList.remove('header__nav--open');
       body.classList.remove('page__body--overflow');
       padding.removePadding();
