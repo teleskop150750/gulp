@@ -198,7 +198,7 @@ export const fontsStyle = (cb) => {
           `@font-face {
   font-family: '${fontName}';
   font-display: swap;
-  src: url('../fonts/${fontName}.woff2') format('woff2');
+  src: url('fonts/${fontName}.woff2') format('woff2');
   font-style: normal;
   font-weight: 400;
 }\n\n`,
