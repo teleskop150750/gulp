@@ -1,5 +1,5 @@
 import gulp from 'gulp'; // gulp
-import webpack from 'webpack-stream';
+import webpack from 'webpack-stream'; // webpack
 // HTML
 import htmlInclude from 'gulp-html-tag-include'; // собрать html
 import webpHtml from 'gulp-webp-html'; // <img src="img.jpg"> => <picture><source srcset="img.webp" type="image/webp"><img src="img.jpg"></picture>
@@ -13,9 +13,8 @@ import media from 'postcss-media-minmax'; // @media (width >= 320px) => @media (
 import mqpacker from 'css-mqpacker'; // сгруппировать @media
 import autoprefixer from 'autoprefixer'; // вендорные префиксы
 import prettier from 'gulp-prettier'; // форматировать
+import rename from 'gulp-rename'; // изментить расширение файла на .css
 import cssnano from 'cssnano'; // сжать css
-// JS
-import terser from 'gulp-terser'; // сжать js
 // IMG
 import webp from 'gulp-webp'; // конвертировать в webp
 import imagemin from 'gulp-imagemin'; // сжать изображения
@@ -61,14 +60,14 @@ const path = {
   // исходники
   src: {
     html: `${srcFolder}/index.html`,
-    css: `${srcFolder}/css/index.css`,
+    css: `${srcFolder}/css/index.pcss`,
     js: `${srcFolder}/js/index.js`,
     fonts: `${srcFolder}/fonts/`,
   },
   // отслеживание
   watch: {
     html: `${srcFolder}/**/*.html`,
-    css: `${srcFolder}/**/*.css`,
+    css: `${srcFolder}/**/*.pcss`,
     js: `${srcFolder}/**/*.js`,
     img: [`${srcFolder}/**/img/*`, `${srcFolder}/favicon/*`],
     fonts: `${srcFolder}/fonts/*`,
@@ -99,12 +98,13 @@ export const css = () => src(path.src.css)
     ]),
   )
   .pipe(prettier())
+  .pipe(rename({
+    extname: '.css',
+  }))
   .pipe(dest(path.build.css))
   .pipe(browserSync.stream());
 
 // JS
-
-const isDev = true;
 
 const webConfig = {
   output: {
@@ -119,8 +119,8 @@ const webConfig = {
       },
     ],
   },
-  mode: isDev ? 'development' : 'production',
-  devtool: isDev ? 'source-map' : 'none',
+  mode: 'development',
+  devtool: 'source-map',
 };
 
 export const js = () => src(path.src.js)
@@ -178,15 +178,16 @@ export const ttf = () => src(`${path.src.fonts}*.ttf`)
 
 export const copyWoff = () => src(`${path.src.fonts}*.{woff,woff2}`).pipe(dest(path.build.fonts));
 
-// запись шрифтов в fonts.css
-// файл должен быть изначально пустой
-// в конце требуется откорректировать названиие шрифтов и их начертание
+/**
+ * подключение шрифтов в fonts.pcss (подключение происходит в пустой файл)
+ * требуется откорректировать названиие шрифтов и их начертание
+*/
 
 export const fontsStyle = (cb) => {
-  const fileContent = fs.readFileSync(`${srcFolder}/css/global/fonts.css`).toString(); // получить содержимое файла
+  const fileContent = fs.readFileSync(`${srcFolder}/css/global/fonts.pcss`).toString(); // получить содержимое файла
   // проверить содержимое файла
   if (fileContent === '') {
-    fs.writeFileSync(`${srcFolder}/css/global/fonts.css`, '/* Fonts */\n\n'); // добавить заглавный комментарий
+    fs.writeFileSync(`${srcFolder}/css/global/fonts.pcss`, '/* Fonts */\n\n'); // добавить заглавный комментарий
     let cFontName = ''; // копия названия файла (шрифта)
     // прочитать содержимое папки
     fs.readdirSync(path.build.fonts).forEach((item) => {
@@ -194,7 +195,7 @@ export const fontsStyle = (cb) => {
       // сравнить с копией, чтобы исключить повторы
       if (cFontName !== fontName) {
         fs.appendFileSync(
-          `${srcFolder}/css/global/fonts.css`, // записать структуру подключения в файл
+          `${srcFolder}/css/global/fonts.pcss`, // записать структуру подключения в файл
           `@font-face {
   font-family: '${fontName}';
   font-display: swap;
@@ -227,9 +228,25 @@ export const minCSS = () => src([`${path.build.css}*.css`])
   .pipe(postcss([cssnano()]))
   .pipe(dest(path.minBuild.css));
 
-export const minJS = () => src([`${path.build.js}*.js`, `${path.build.js}*.es5.js`])
-  .pipe(src([`${path.build.js}*.js`]))
-  .pipe(terser())
+const webConfigMin = {
+  output: {
+    filename: 'index.js',
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        loader: 'babel-loader',
+        exclude: '/node_modules/',
+      },
+    ],
+  },
+  mode: 'production',
+  devtool: 'none',
+};
+
+export const minJS = () => src(path.src.js)
+  .pipe(webpack(webConfigMin))
   .pipe(dest(path.minBuild.js));
 
 export const minIMG = () => src(`${path.build.img}*.{jpg,png,svg,}`)
