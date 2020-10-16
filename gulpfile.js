@@ -129,14 +129,15 @@ export const js = () => src(path.src.js)
   .pipe(browserSync.stream());
 
 // img
+
 export const img = () => {
-  const srchArr = []; // массив путей к картинкам в папке blocks
+  const srcArr = []; // массив путей к картинкам в папке blocks
   fs.readdirSync(`${srcFolder}/blocks/`).forEach((block) => {
-    const pathImg = `${srcFolder}/blocks/${block}/img/*.{jpg,png,}`;
-    srchArr.push(pathImg);
+    const pathImg = `${srcFolder}/blocks/${block}/img/*.{jpg,png,svg}`;
+    srcArr.push(pathImg);
   });
 
-  return src(srchArr)
+  return src(srcArr)
     .pipe(changed(path.build.img, { extension: '.webp' }))
     .pipe(debug({ title: 'webp:' }))
     .pipe(webp({
@@ -144,8 +145,8 @@ export const img = () => {
       method: 4, // метод сжатия, который будет использоваться между 0(самым быстрым) и 6(самым медленным).
     }))
     .pipe(dest(path.build.img))
-
-    .pipe(src(srchArr))
+    // копируем оригиналы картинок
+    .pipe(src(srcArr))
     .pipe(changed(path.build.img))
     .pipe(debug({ title: 'copy:' }))
     .pipe(dest(path.build.img))
